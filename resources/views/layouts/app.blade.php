@@ -29,7 +29,7 @@
 <body class="bg-museum-bg text-gray-800 font-sans h-screen flex overflow-hidden">
 
     <!-- SIDEBAR KIRI -->
-    <aside class="w-64 border-r border-gray-200 flex flex-col justify-between shrink-0 {{ (Auth::check() && Auth::user()->peran === 'kurator') ? 'bg-[#faf5f0]' : 'bg-white' }}">
+    <aside class="w-64 border-r border-gray-200 flex flex-col justify-between shrink-0 {{ (Auth::check() && in_array(Auth::user()->peran, ['kurator', 'pimpinan'])) ? 'bg-[#faf5f0]' : 'bg-white' }}">
         <div>
             <!-- Logo & Title -->
             <div class="p-6 flex items-center gap-3">
@@ -44,7 +44,25 @@
             
             <!-- Menu Utama -->
             <nav class="px-4 mt-2">
-                @if(Auth::check() && Auth::user()->peran === 'kurator')
+                @if(Auth::check() && Auth::user()->peran === 'pimpinan')
+                    <a href="{{ route('leader.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('leader.dashboard') || request()->routeIs('leader.review') ? 'bg-[#4a1515] text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50' }} font-semibold rounded-md text-sm mb-1">
+                        <!-- Ikon Dasbor -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                        Dasbor Utama
+                    </a>
+                    <a href="{{ route('leader.education') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('leader.education') ? 'bg-[#4a1515] text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50' }} font-semibold rounded-md text-sm mb-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Otorisasi Edukasi
+                    </a>
+                    <a href="{{ route('leader.repository') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('leader.repository') ? 'bg-[#4a1515] text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50' }} font-semibold rounded-md text-sm mb-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        Repositori Institusi
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-gray-600 font-medium rounded-md text-sm hover:bg-gray-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Settings
+                    </a>
+                @elseif(Auth::check() && Auth::user()->peran === 'kurator')
                     <a href="{{ route('curator.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 bg-[#f5ebe6] text-museum-red font-semibold rounded-md text-sm border-l-4 border-museum-red">
                         <!-- Ikon Kurator -->
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>

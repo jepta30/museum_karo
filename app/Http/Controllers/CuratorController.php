@@ -10,7 +10,7 @@ class CuratorController extends Controller
 {
     public function index(Request $request)
     {
-        $pendingCollections = Koleksi::whereIn('status', ['menunggu_kurasi', 'menunggu_persetujuan'])
+        $pendingCollections = Koleksi::whereIn('status', ['menunggu_kurasi', 'menunggu_persetujuan', 'disetujui'])
                                         ->orderBy('updated_at', 'desc')
                                         ->get();
 
@@ -22,6 +22,24 @@ class CuratorController extends Controller
         }
 
         $categories = Kategori::all();
+
+        // Generate draft inventory number if empty
+        if ($selectedCollection && empty($selectedCollection->draf_nomor_inventaris)) {
+            $receiveDate = \Carbon\Carbon::parse($selectedCollection->tanggal_terima);
+            $yearFront = $receiveDate->format('y'); // 2 digit tahun masuk
+            
+            $yearFull = (int) $receiveDate->format('Y');
+            $middleNumber = str_pad($yearFull - 2009, 2, '0', STR_PAD_LEFT); // Tahun ke-berapa sejak 2009
+            
+            // Get total count of items that arrived before or up to this item's creation
+            $sequence = \App\Models\Koleksi::where('id', '<=', $selectedCollection->id)->count();
+            // Start from 1000 or 1 based on preference. User says "jumlah barang". So just the count.
+            // If we pad it to 4 digits:
+            $paddedSeq = str_pad($sequence, 4, '0', STR_PAD_LEFT);
+            
+            $generatedDraft = "{$yearFront}.{$middleNumber}.{$paddedSeq}";
+            $selectedCollection->draf_nomor_inventaris = $generatedDraft;
+        }
 
         return view('curator.dashboard', compact('pendingCollections', 'selectedCollection', 'categories'));
     }
@@ -52,5 +70,27 @@ class CuratorController extends Controller
             : 'Draf riset berhasil disimpan.';
 
         return redirect()->route('curator.dashboard')->with('success', $message);
+    }
+
+    public function generateBeritaAcara($id)
+    {
+        $collection = Koleksi::findOrFail($id);
+
+        if ($collection->status !== 'disetujui' && $collection->status !== 'dipublikasi') {
+            return redirect()->back()->with('error', 'Berita Acara hanya dapat diunduh jika koleksi sudah disetujui.');
+        }
+
+        if ($collection->batch_id) {
+            $collections = Koleksi::where('batch_id', $collection->batch_id)->get();
+        } else {
+            $collections = collect([$collection]);
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.berita_acara', [
+            'collection' => $collection, 
+            'collections' => $collections
+        ]);
+        
+        return $pdf->download('Berita_Acara_Penerimaan_Koleksi_' . $collection->nomor_inventaris_final . '.pdf');
     }
 }

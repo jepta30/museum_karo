@@ -20,25 +20,44 @@ class RegistrarController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_sementara' => 'required|string|max:255',
-            'kategori_id' => 'required|exists:kategori,id',
             'nama_penyerah' => 'required|string|max:255',
+            'tempat_lahir_penyerah' => 'nullable|string|max:255',
+            'tanggal_lahir_penyerah' => 'nullable|date',
+            'pekerjaan_penyerah' => 'nullable|string|max:255',
+            'alamat_penyerah' => 'nullable|string',
             'tanggal_terima' => 'required|date',
-            'kondisi_awal' => 'nullable|string',
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:10240',
+            
+            'nama_sementara' => 'required|array|min:1',
+            'nama_sementara.*' => 'required|string|max:255',
+            'kategori_id' => 'required|array|min:1',
+            'kategori_id.*' => 'required|exists:kategori,id',
+            'kondisi_awal' => 'nullable|array',
+            'klaim_asal_usul' => 'nullable|array',
+            'photo' => 'required|array|min:1',
+            'photo.*' => 'required|image|mimes:jpeg,png,jpg|max:10240',
         ]);
 
-        $photoPath = $request->file('photo')->store('koleksi', 'public');
+        $batchId = 'BA-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(6));
 
-        Koleksi::create([
-            'nama_sementara' => $request->nama_sementara,
-            'kategori_id' => $request->kategori_id,
-            'nama_penyerah' => $request->nama_penyerah,
-            'tanggal_terima' => $request->tanggal_terima,
-            'kondisi_awal' => $request->kondisi_awal,
-            'path_foto' => $photoPath,
-            'status' => 'menunggu_kurasi',
-        ]);
+        foreach ($request->nama_sementara as $index => $nama) {
+            $photoPath = $request->file('photo')[$index]->store('koleksi', 'public');
+
+            Koleksi::create([
+                'batch_id' => $batchId,
+                'nama_sementara' => $nama,
+                'kategori_id' => $request->kategori_id[$index],
+                'nama_penyerah' => $request->nama_penyerah,
+                'tempat_lahir_penyerah' => $request->tempat_lahir_penyerah,
+                'tanggal_lahir_penyerah' => $request->tanggal_lahir_penyerah,
+                'pekerjaan_penyerah' => $request->pekerjaan_penyerah,
+                'alamat_penyerah' => $request->alamat_penyerah,
+                'tanggal_terima' => $request->tanggal_terima,
+                'kondisi_awal' => $request->kondisi_awal[$index] ?? null,
+                'klaim_asal_usul' => $request->klaim_asal_usul[$index] ?? null,
+                'path_foto' => $photoPath,
+                'status' => 'menunggu_kurasi',
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Data koleksi berhasil disimpan!');
     }

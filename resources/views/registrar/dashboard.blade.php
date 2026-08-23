@@ -29,53 +29,76 @@
 
                 <form action="/collections" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
-                    <!-- Area Upload -->
-                    <div id="photo-upload-container" class="border-2 border-dashed border-red-200 bg-red-50/50 rounded-md p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-red-50 transition mb-4 relative">
-                        <input id="photo-upload-input" type="file" name="photo" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" required accept="image/*">
-                        <svg class="w-8 h-8 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <p id="photo-upload-text" class="text-sm font-semibold text-gray-800">Unggah Gambar Utama koleksi</p>
-                        <p class="text-xs text-gray-500 mt-1">JPEG atau PNG resolusi tinggi, maks 10MB</p>
+                    
+                    <!-- INFO DONATUR (Shared) -->
+                    <div class="border border-gray-200 rounded-md p-5 bg-gray-50/50 mb-6">
+                        <h4 class="font-semibold text-gray-800 text-sm mb-4 border-b border-gray-200 pb-2">Informasi Penyerah / Donatur</h4>
+                        
+                        <div class="mb-4">
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Penyerah / Donatur</label>
+                            <input type="text" name="nama_penyerah" required placeholder="Masukkan nama atau institusi" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition mb-3">
+                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                <input type="text" name="tempat_lahir_penyerah" placeholder="Tempat Lahir (opsional)" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition">
+                                <input type="date" name="tanggal_lahir_penyerah" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition text-gray-500">
+                            </div>
+                            <input type="text" name="pekerjaan_penyerah" placeholder="Pekerjaan (opsional)" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition mb-3">
+                            <textarea name="alamat_penyerah" rows="2" placeholder="Alamat lengkap (opsional)" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Tanggal Terima</label>
+                            <input type="date" name="tanggal_terima" required class="w-1/2 p-2.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition text-gray-500">
+                        </div>
                     </div>
 
-                    <!-- Input Nama -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nama koleksi (Sementara)</label>
-                        <input type="text" name="nama_sementara" required placeholder="cth., Gagang Piso Surit Kayu" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition">
+                    <!-- DAFTAR ITEM (Dynamic) -->
+                    <div id="items-container" class="space-y-6">
+                        <div class="item-block border border-gray-200 rounded-md p-5 bg-white relative">
+                            <h4 class="font-semibold text-gray-800 text-sm mb-4 border-b border-gray-200 pb-2 item-title">Data Koleksi #1</h4>
+                            
+                            <!-- Area Upload -->
+                            <div class="photo-upload-container border-2 border-dashed border-red-200 bg-red-50/50 rounded-md p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-red-50 transition mb-4 relative">
+                                <input type="file" name="photo[]" class="photo-upload-input absolute inset-0 w-full h-full opacity-0 cursor-pointer" required accept="image/*">
+                                <svg class="w-6 h-6 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <p class="photo-upload-text text-sm font-semibold text-gray-800">Unggah Gambar Utama koleksi</p>
+                                <p class="text-xs text-gray-500 mt-1">JPEG/PNG, maks 10MB</p>
+                            </div>
+
+                            <!-- Input Nama -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Koleksi (Sementara)</label>
+                                <input type="text" name="nama_sementara[]" required placeholder="cth., Gagang Piso Surit Kayu" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition">
+                            </div>
+
+                            <!-- Jenis Koleksi -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Kategori Koleksi</label>
+                                <select name="kategori_id[]" required class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition appearance-none text-gray-600">
+                                    <option value="">Pilih Kategori</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <!-- Catatan -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Kondisi Awal</label>
+                                <textarea name="kondisi_awal[]" rows="2" placeholder="Jelaskan secara singkat kerusakan yang terlihat..." class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition"></textarea>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Jenis Koleksi -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori Koleksi</label>
-                        <select name="kategori_id" required class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition appearance-none text-gray-600">
-                            <option value="">Pilih Kategori</option>
-                            @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Nama Sumber -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Penyerah / Donatur</label>
-                        <input type="text" name="nama_penyerah" required placeholder="Masukkan nama atau institusi" class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition">
-                    </div>
-
-                    <!-- Tanggal Akuisisi -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal Terima</label>
-                        <input type="date" name="tanggal_terima" required class="w-1/2 p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition text-gray-500">
-                    </div>
-
-                    <!-- Catatan -->
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kondisi Awal</label>
-                        <textarea name="kondisi_awal" rows="3" placeholder="Jelaskan secara singkat kerusakan yang terlihat atau karakteristik penting..." class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition"></textarea>
+                    <div class="pt-2">
+                        <button type="button" id="add-item-btn" class="text-sm font-bold text-museum-red hover:text-red-900 flex items-center gap-2 px-3 py-1.5 border border-museum-red border-dashed rounded bg-red-50 hover:bg-red-100 transition">
+                            <span>+</span> Tambah Koleksi Lain
+                        </button>
                     </div>
 
                     <!-- Tombol Form -->
-                    <div class="flex justify-end gap-3 pt-6">
-                        <button type="reset" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition">Bersihkan</button>
-                        <button type="submit" class="px-6 py-2 bg-gray-100 text-gray-900 border border-gray-200 rounded-md text-sm font-semibold hover:bg-gray-200 transition">Simpan Entri</button>
+                    <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 mt-6">
+                        <button type="reset" class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition">Bersihkan</button>
+                        <button type="submit" class="px-6 py-2.5 bg-[#4a1b1b] text-white border border-[#4a1b1b] rounded-md text-sm font-semibold hover:bg-black transition">Simpan Semua Entri</button>
                     </div>
                 </form>
             </div>
@@ -141,29 +164,72 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('photo-upload-input');
-    const container = document.getElementById('photo-upload-container');
-    const textElement = document.getElementById('photo-upload-text');
+    
+    function attachPhotoListener(container) {
+        const fileInput = container.querySelector('.photo-upload-input');
+        const textElement = container.querySelector('.photo-upload-text');
 
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Tampilkan nama file yang dipilih
-                textElement.textContent = 'File terpilih: ' + file.name;
-                textElement.classList.add('text-green-700');
-                
-                // Ubah gaya border kotak menjadi hijau
-                container.classList.remove('border-red-200', 'bg-red-50/50');
-                container.classList.add('border-green-400', 'bg-green-50');
-            } else {
-                // Kembalikan ke state awal jika dibatalkan
-                textElement.textContent = 'Unggah Gambar Utama koleksi';
-                textElement.classList.remove('text-green-700');
-                
-                container.classList.add('border-red-200', 'bg-red-50/50');
-                container.classList.remove('border-green-400', 'bg-green-50');
-            }
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    textElement.textContent = 'File terpilih: ' + file.name;
+                    textElement.classList.add('text-green-700');
+                    container.classList.remove('border-red-200', 'bg-red-50/50');
+                    container.classList.add('border-green-400', 'bg-green-50');
+                } else {
+                    textElement.textContent = 'Unggah Gambar Utama koleksi';
+                    textElement.classList.remove('text-green-700');
+                    container.classList.add('border-red-200', 'bg-red-50/50');
+                    container.classList.remove('border-green-400', 'bg-green-50');
+                }
+            });
+        }
+    }
+
+    // Attach to the first item
+    const firstContainer = document.querySelector('.photo-upload-container');
+    if (firstContainer) attachPhotoListener(firstContainer);
+
+    // Handle adding new items
+    const addItemBtn = document.getElementById('add-item-btn');
+    const itemsContainer = document.getElementById('items-container');
+    let itemCount = 1;
+
+    if (addItemBtn) {
+        addItemBtn.addEventListener('click', function() {
+            itemCount++;
+            
+            // Clone the first item block
+            const firstBlock = document.querySelector('.item-block');
+            const newBlock = firstBlock.cloneNode(true);
+            
+            // Update title
+            newBlock.querySelector('.item-title').textContent = 'Data Koleksi #' + itemCount;
+            
+            // Reset inputs
+            const textInputs = newBlock.querySelectorAll('input[type="text"], textarea');
+            textInputs.forEach(input => input.value = '');
+            
+            const fileInput = newBlock.querySelector('.photo-upload-input');
+            fileInput.value = '';
+            
+            const selectInputs = newBlock.querySelectorAll('select');
+            selectInputs.forEach(select => select.value = '');
+            
+            // Reset photo container styles
+            const photoContainer = newBlock.querySelector('.photo-upload-container');
+            const textElement = newBlock.querySelector('.photo-upload-text');
+            textElement.textContent = 'Unggah Gambar Utama koleksi';
+            textElement.classList.remove('text-green-700');
+            photoContainer.classList.add('border-red-200', 'bg-red-50/50');
+            photoContainer.classList.remove('border-green-400', 'bg-green-50');
+            
+            // Attach listener to new photo container
+            attachPhotoListener(photoContainer);
+            
+            // Append to container
+            itemsContainer.appendChild(newBlock);
         });
     }
 });

@@ -22,14 +22,20 @@
                 <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-3">{{ $item->kondisi_awal }}</p>
                 
                 @if($item->status == 'menunggu_kurasi')
-                    <span class="inline-block px-2 py-1 bg-[#f5ebe6] text-[#785b4a] rounded text-[9px] font-bold uppercase tracking-wider">Menunggu Riset</span>
-                @else
+                    <span class="inline-block mt-3 px-2 py-1 bg-[#f5ebe6] text-[#785b4a] rounded text-[9px] font-bold uppercase tracking-wider">Menunggu Riset</span>
+                @elseif($item->status == 'menunggu_persetujuan')
                     <!-- Item yang sudah dikirim ke pimpinan -->
                     <div class="mt-3 bg-[#fbf7f5] border border-[#ecdce0] p-2 rounded-md">
-                        <p class="text-[9px] font-bold text-gray-500 mb-0.5 uppercase tracking-wider">Nomor Induk Koleksi (NIK) Tetap</p>
+                        <p class="text-[9px] font-bold text-gray-500 mb-0.5 uppercase tracking-wider">Nomor Induk Koleksi (NIK) Sementara</p>
                         <p class="text-xs font-bold text-museum-red">{{ $item->draf_nomor_inventaris }}</p>
                     </div>
                     <span class="inline-block mt-3 px-2 py-1 bg-gray-100 text-gray-600 rounded text-[9px] font-bold uppercase tracking-wider">Menunggu Validasi</span>
+                @elseif($item->status == 'disetujui')
+                    <div class="mt-3 bg-green-50 border border-green-200 p-2 rounded-md">
+                        <p class="text-[9px] font-bold text-green-700 mb-0.5 uppercase tracking-wider">Nomor Induk Koleksi (NIK) Tetap</p>
+                        <p class="text-xs font-bold text-green-800">{{ $item->nomor_inventaris_final }}</p>
+                    </div>
+                    <span class="inline-block mt-3 px-2 py-1 bg-green-100 text-green-700 rounded text-[9px] font-bold uppercase tracking-wider">Disetujui Pimpinan</span>
                 @endif
             </a>
             @empty
@@ -63,9 +69,11 @@
                     <div class="bg-[#fbf7f5] border border-[#ecdce0] p-3 rounded-md min-w-[120px]">
                         <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Status Saat Ini</p>
                         @if($selectedCollection->status == 'menunggu_kurasi')
-                            <p class="text-sm text-museum-red font-bold">Kurasi Berlangsung</p>
-                        @else
-                            <p class="text-sm text-museum-red font-bold">Menunggu Validasi Pimpinan</p>
+                            <span class="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">Tugas Aktif</span>
+                        @elseif($selectedCollection->status == 'menunggu_persetujuan')
+                            <span class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">Menunggu Validasi Pimpinan</span>
+                        @elseif($selectedCollection->status == 'disetujui')
+                            <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">Tervalidasi (Final)</span>
                         @endif
                     </div>
                     <div class="bg-gray-50 border border-gray-200 p-3 rounded-md min-w-[120px]">
@@ -126,7 +134,7 @@
                         <label class="block text-[11px] font-bold text-gray-700 mb-2">Draf Nomor Inventaris <span class="text-red-500">*</span></label>
                         @if($selectedCollection->status == 'menunggu_kurasi')
                             <input type="text" name="draf_nomor_inventaris" required value="{{ $selectedCollection->draf_nomor_inventaris }}" class="w-full p-3 border border-gray-200 rounded text-sm bg-[#fbf7f5] focus:bg-white focus:outline-none focus:border-museum-red transition">
-                            <p class="text-[9px] text-gray-400 mt-1">Format: KRM / Tahun / Kode Kategori / Nomor Urut</p>
+                            <p class="text-[9px] text-gray-400 mt-1">Format (Bisa Diedit): Tahun (2 Angka) . Tahun ke-berapa sejak 2009 . Jumlah Barang</p>
                         @else
                             <div class="bg-[#fbf7f5] border border-[#ecdce0] p-4 rounded-md">
                                 <p class="text-[10px] font-bold text-gray-500 mb-1 uppercase tracking-wider">Nomor Induk Koleksi (NIK) Tetap</p>
@@ -156,32 +164,47 @@
                 </div>
                 
                 <!-- Buttons -->
-                @if($selectedCollection->status == 'menunggu_kurasi')
-                <div class="flex justify-end gap-3 pt-4">
-                    <button type="submit" name="action" value="draft" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded text-sm font-bold hover:bg-gray-50 transition">Simpan Draf</button>
-                    <button type="submit" name="action" value="submit" class="px-6 py-2.5 bg-museum-red text-white border border-museum-red rounded text-sm font-bold hover:bg-red-900 transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                        Kirim Rekomendasi ke Pimpinan
-                    </button>
-                </div>
-                @else
                 <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                    <div class="flex items-center gap-2 text-[#785b4a]">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <p class="text-xs font-bold w-32 leading-tight">Rekomendasi berhasil dikirim ke Pimpinan pada {{ $selectedCollection->updated_at->format('H:i') }} WIB</p>
-                    </div>
-                    <div class="flex gap-3">
-                        <button type="button" class="px-6 py-2.5 bg-[#fbf7f5] border border-[#ecdce0] text-[#86515c] rounded text-xs font-bold hover:bg-red-50 transition flex items-center gap-2 flex-col justify-center h-14 w-28 text-center leading-tight">
-                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            Unduh Berita Acara
-                        </button>
-                        <a href="{{ route('curator.dashboard') }}" class="px-6 py-2.5 bg-[#4a1515] text-white border border-[#4a1515] rounded text-xs font-bold hover:bg-black transition flex items-center gap-2 flex-col justify-center h-14 w-28 text-center leading-tight">
-                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                            Kembali ke Antrean
-                        </a>
-                    </div>
+                    @if($selectedCollection->status == 'menunggu_kurasi')
+                        <div class="flex gap-3 ml-auto">
+                            <button type="submit" name="action" value="draft" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded text-sm font-bold hover:bg-gray-50 transition">Simpan Draf</button>
+                            <button type="submit" name="action" value="submit" class="px-6 py-2.5 bg-museum-red text-white border border-museum-red rounded text-sm font-bold hover:bg-red-900 transition flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                                Kirim Rekomendasi ke Pimpinan
+                            </button>
+                        </div>
+                    @elseif($selectedCollection->status == 'menunggu_persetujuan')
+                        <div class="flex items-center gap-2 text-[#785b4a]">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-xs font-bold w-32 leading-tight">Rekomendasi berhasil dikirim ke Pimpinan</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="button" disabled class="px-6 py-2.5 bg-[#fbf7f5] border border-[#ecdce0] text-gray-400 rounded text-xs font-bold cursor-not-allowed flex items-center gap-2 flex-col justify-center h-14 w-28 text-center leading-tight">
+                                <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Unduh Berita Acara
+                            </button>
+                            <a href="{{ route('curator.dashboard') }}" class="px-6 py-2.5 bg-[#4a1515] text-white border border-[#4a1515] rounded text-xs font-bold hover:bg-black transition flex items-center gap-2 flex-col justify-center h-14 w-28 text-center leading-tight">
+                                <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                Kembali ke Antrean
+                            </a>
+                        </div>
+                    @elseif($selectedCollection->status == 'disetujui')
+                        <div class="flex items-center gap-2 text-green-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <p class="text-xs font-bold w-32 leading-tight">Berita Acara Resmi Telah Tersedia</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <a href="{{ route('curator.berita_acara', $selectedCollection->id) }}" target="_blank" class="px-6 py-2.5 bg-green-50 border border-green-600 text-green-700 rounded text-xs font-bold hover:bg-green-100 transition flex items-center gap-2 flex-col justify-center h-14 w-28 text-center leading-tight">
+                                <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Unduh Berita Acara
+                            </a>
+                            <a href="{{ route('curator.dashboard') }}" class="px-6 py-2.5 bg-[#4a1515] text-white border border-[#4a1515] rounded text-xs font-bold hover:bg-black transition flex items-center gap-2 flex-col justify-center h-14 w-28 text-center leading-tight">
+                                <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                Kembali ke Antrean
+                            </a>
+                        </div>
+                    @endif
                 </div>
-                @endif
             </div>
         </form>
         
