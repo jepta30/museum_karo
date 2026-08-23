@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
         $peran = Auth::user()->peran;
         if ($peran === 'kurator') return redirect()->route('curator.dashboard');
         if ($peran === 'pimpinan') return redirect()->route('leader.dashboard');
-        if ($peran === 'edukator') return redirect('/educator'); // Placeholder
+        if ($peran === 'edukator') return redirect()->route('educator.dashboard');
         return redirect()->route('registrar.dashboard');
     });
 
@@ -38,4 +38,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/leader/collections/{id}/approve', [LeaderController::class, 'approve'])->name('leader.approve');
     Route::get('/leader/education', [LeaderController::class, 'education'])->name('leader.education');
     Route::get('/leader/repository', [LeaderController::class, 'repository'])->name('leader.repository');
+
+    // Rute Edukator
+    Route::get('/educator', [App\Http\Controllers\EducatorController::class, 'index'])->name('educator.dashboard');
+    Route::get('/educator/koleksi', [App\Http\Controllers\EducatorController::class, 'koleksi'])->name('educator.koleksi');
+    Route::get('/educator/koleksi/{id}', [App\Http\Controllers\EducatorController::class, 'showKoleksi'])->name('educator.koleksi.show');
+    
+    // Rute Modul Edukasi
+    Route::get('/educator/modul/create', [App\Http\Controllers\EducatorController::class, 'createModul'])->name('educator.modul.create');
+    Route::post('/educator/modul/store', [App\Http\Controllers\EducatorController::class, 'storeModul'])->name('educator.modul.store');
 });
