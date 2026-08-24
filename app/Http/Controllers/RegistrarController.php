@@ -10,11 +10,28 @@ class RegistrarController extends Controller
 {
     public function index()
     {
+        $menungguCount = Koleksi::where('status', 'menunggu_kurasi')->count();
+        $dinilaiCount = Koleksi::where('status', 'menunggu_persetujuan')->count();
+        $selesaiCount = Koleksi::whereIn('status', ['disetujui', 'dipublikasi'])->count();
+
+        $aktivitasTerbaru = Koleksi::with('kategori')->orderBy('created_at', 'desc')->take(10)->get();
+
+        return view('registrar.dashboard', compact('menungguCount', 'dinilaiCount', 'selesaiCount', 'aktivitasTerbaru'));
+    }
+
+    public function create()
+    {
         $categories = Kategori::all();
         $collections = Koleksi::with('kategori')->orderBy('created_at', 'desc')->take(12)->get();
         $weeklyCount = Koleksi::where('created_at', '>=', now()->subDays(7))->count();
         
-        return view('registrar.dashboard', compact('categories', 'collections', 'weeklyCount'));
+        return view('registrar.create', compact('categories', 'collections', 'weeklyCount'));
+    }
+
+    public function show($id)
+    {
+        $koleksi = Koleksi::with('kategori')->findOrFail($id);
+        return view('registrar.show', compact('koleksi'));
     }
 
     public function store(Request $request)

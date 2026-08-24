@@ -62,36 +62,5 @@ class LeaderController extends Controller
         return view('leader.education', compact('modules', 'totalDiterbitkan', 'menungguPersetujuan', 'totalImages'));
     }
 
-    public function repository()
-    {
-        $approvedCount = \App\Models\Koleksi::where('status', 'disetujui')->count();
-        $totalDokumen = $approvedCount; // Real DB logic
-        $beritaAcaraBaru = $approvedCount; // Real DB logic
 
-        $dokumenList = [
-            [
-                'nama' => 'Berita Acara Serah Terima Artefak #8821',
-                'id_doc' => 'DOC-2023-10-8821',
-                'kategori' => 'Berita Acara',
-                'tanggal' => '12 Okt 2023',
-                'ukuran' => '2.4 MB'
-            ],
-            [
-                'nama' => 'SK Kurasi Koleksi Emas',
-                'id_doc' => 'SK-DIR-2023-09-001',
-                'kategori' => 'SK Tim',
-                'tanggal' => '05 Sep 2023',
-                'ukuran' => '1.1 MB'
-            ],
-            [
-                'nama' => 'Laporan Audit Koleksi Semester I',
-                'id_doc' => 'REP-2023-S1-AUD',
-                'kategori' => 'Laporan',
-                'tanggal' => '15 Jul 2023',
-                'ukuran' => '15.8 MB'
-            ]
-        ];
-
-        return view('leader.repository', compact('totalDokumen', 'beritaAcaraBaru', 'dokumenList'));
-    }
 }

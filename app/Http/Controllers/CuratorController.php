@@ -93,4 +93,45 @@ class CuratorController extends Controller
         
         return $pdf->download('Berita_Acara_Penerimaan_Koleksi_' . $collection->nomor_inventaris_final . '.pdf');
     }
+
+    public function repository()
+    {
+        $approvedCount = \App\Models\Koleksi::where('status', 'disetujui')->count();
+        $totalDokumen = \App\Models\DokumenRepositori::count(); 
+        
+        $beritaAcaraBaru = \App\Models\DokumenRepositori::whereMonth('created_at', now()->month)
+                                                        ->whereYear('created_at', now()->year)
+                                                        ->count(); 
+        
+        // Dokumen Legal Aktif: Dokumen berupa Surat Keputusan atau Berita Acara
+        $dokumenAktif = \App\Models\DokumenRepositori::whereIn('kategori', ['Surat Keputusan', 'Berita Acara'])->count();
+
+        $dokumenList = \App\Models\DokumenRepositori::orderBy('created_at', 'desc')->paginate(10);
+
+        return view('curator.repository', compact('totalDokumen', 'beritaAcaraBaru', 'dokumenAktif', 'dokumenList'));
+    }
+
+    public function storeDokumen(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'kategori' => 'required|string|max:255',
+            'file_dokumen' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:20480', // Max 20MB
+        ]);
+
+        $file = $request->file('file_dokumen');
+        $path = $file->store('repositori', 'public');
+        
+        $ukuranBytes = $file->getSize();
+        $ukuranMB = number_format($ukuranBytes / 1048576, 2) . ' MB';
+
+        \App\Models\DokumenRepositori::create([
+            'nama' => $request->nama,
+            'kategori' => $request->kategori,
+            'path_file' => $path,
+            'ukuran' => $ukuranMB
+        ]);
+
+        return redirect()->route('curator.repository')->with('success', 'Dokumen berhasil diunggah ke repositori.');
+    }
 }

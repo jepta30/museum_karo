@@ -25,19 +25,22 @@ Route::middleware('auth')->group(function () {
 
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');
-    Route::post('/collections', [RegistrarController::class, 'store']);
+    Route::get('/registrar/create', [RegistrarController::class, 'create'])->name('registrar.create');
+    Route::get('/registrar/collections/{id}', [RegistrarController::class, 'show'])->name('registrar.show');
+    Route::post('/collections', [RegistrarController::class, 'store'])->name('registrar.store');
 
     // Rute Kurator
     Route::get('/curator', [CuratorController::class, 'index'])->name('curator.dashboard');
     Route::post('/curator/collections/{id}', [CuratorController::class, 'update'])->name('curator.update');
     Route::get('/curator/collections/{id}/berita-acara', [CuratorController::class, 'generateBeritaAcara'])->name('curator.berita_acara');
+    Route::get('/curator/repository', [CuratorController::class, 'repository'])->name('curator.repository');
+    Route::post('/curator/repository/store', [CuratorController::class, 'storeDokumen'])->name('curator.repository.store');
 
     // Rute Pimpinan
     Route::get('/leader', [LeaderController::class, 'index'])->name('leader.dashboard');
     Route::get('/leader/collections/{id}', [LeaderController::class, 'review'])->name('leader.review');
     Route::post('/leader/collections/{id}/approve', [LeaderController::class, 'approve'])->name('leader.approve');
     Route::get('/leader/education', [LeaderController::class, 'education'])->name('leader.education');
-    Route::get('/leader/repository', [LeaderController::class, 'repository'])->name('leader.repository');
 
     // Rute Edukator
     Route::get('/educator', [App\Http\Controllers\EducatorController::class, 'index'])->name('educator.dashboard');
