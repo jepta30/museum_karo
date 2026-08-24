@@ -134,7 +134,7 @@
                     <div>
                         <h4 class="text-2xl font-serif font-bold text-[#4a1b1b] mb-3 leading-tight">Arsip Gambar<br>Resolusi Tinggi</h4>
                         <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                            Koleksi {{ number_format($totalImages) }}+ gambar artefak terverifikasi yang tersedia untuk disisipkan ke dalam modul edukasi.
+                            Koleksi {{ number_format($totalImages) }}+ gambar koleksi budaya terverifikasi yang tersedia untuk disisipkan ke dalam modul edukasi.
                         </p>
                     </div>
                     <div>

@@ -43,7 +43,7 @@
                 <table class="w-full text-left border-collapse min-w-[800px]">
                     <thead>
                         <tr class="bg-[#fbf8f5] border-b border-[#f0e8df]">
-                            <th class="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-1/5">ID Artefak</th>
+                            <th class="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-1/5">Nomor Induk Koleksi</th>
                             <th class="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest w-1/4">Nama Koleksi</th>
                             <th class="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Tanggal Masuk</th>
                             <th class="py-4 px-6 text-[11px] font-bold text-gray-500 uppercase tracking-widest">Status</th>

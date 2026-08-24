@@ -52,7 +52,7 @@
                     Catatan Kuratorial & Deskripsi
                 </h3>
                 <div class="prose prose-sm text-gray-700 max-w-none">
-                    <p class="leading-relaxed whitespace-pre-wrap">{{ $koleksi->deskripsi ?? $koleksi->kondisi_kuratorial ?? 'Belum ada catatan kuratorial rinci untuk artefak ini.' }}</p>
+                    <p class="leading-relaxed whitespace-pre-wrap">{{ $koleksi->deskripsi ?? $koleksi->kondisi_kuratorial ?? 'Belum ada catatan kuratorial rinci untuk koleksi budaya ini.' }}</p>
                 </div>
             </div>
         </div>
@@ -62,21 +62,37 @@
             <!-- Action Card -->
             <div class="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
                 <h3 class="text-sm font-bold text-gray-900 mb-3">Siapkan Materi Edukasi</h3>
-                <p class="text-xs text-gray-500 mb-4 leading-relaxed">Jadikan data mentah artefak ini sebagai modul edukasi terstruktur untuk dibaca pengunjung.</p>
                 
-                <form action="{{ route('educator.modul.create') }}" method="GET">
-                    <input type="hidden" name="koleksi_id" value="{{ $koleksi->id }}">
-                    <button type="submit" class="w-full bg-museum-red text-white font-semibold py-2.5 rounded-lg hover:bg-red-900 transition flex justify-center items-center gap-2 shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        Mulai Buat Modul
-                    </button>
-                </form>
+                @if($modulTerkait)
+                    <p class="text-xs text-gray-500 mb-4 leading-relaxed">Modul edukasi untuk koleksi budaya ini telah dibuat.</p>
+                    
+                    @if($modulTerkait->status === 'draf')
+                        <div class="w-full bg-orange-100 text-orange-800 font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 border border-orange-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Status: Draf
+                        </div>
+                    @else
+                        <div class="w-full bg-green-100 text-green-800 font-semibold py-2.5 rounded-lg flex justify-center items-center gap-2 border border-green-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Status: Terverifikasi
+                        </div>
+                    @endif
+                @else
+                    <p class="text-xs text-gray-500 mb-4 leading-relaxed">Jadikan data mentah koleksi budaya ini sebagai modul edukasi terstruktur untuk dibaca pengunjung.</p>
+                    <form action="{{ route('educator.modul.create') }}" method="GET">
+                        <input type="hidden" name="koleksi_id" value="{{ $koleksi->id }}">
+                        <button type="submit" class="w-full bg-museum-red text-white font-semibold py-2.5 rounded-lg hover:bg-red-900 transition flex justify-center items-center gap-2 shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Mulai Buat Modul
+                        </button>
+                    </form>
+                @endif
             </div>
 
             <!-- Metadata List -->
             <div class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                 <div class="bg-gray-50 border-b border-gray-200 px-5 py-3">
-                    <h3 class="font-semibold text-gray-800">Metadata Artefak</h3>
+                    <h3 class="font-semibold text-gray-800">Metadata Koleksi Budaya</h3>
                 </div>
                 <div class="divide-y divide-gray-100">
                     <div class="px-5 py-3 flex flex-col gap-1">

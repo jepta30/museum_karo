@@ -150,7 +150,7 @@
                 <h4 class="text-xs text-gray-400 mb-2 font-semibold tracking-wider">Kedatangan Minggu Ini</h4>
                 <div class="flex items-baseline gap-3 z-10 relative">
                     <span class="text-5xl font-serif font-bold">{{ $weeklyCount }}</span>
-                    <span class="text-[11px] text-gray-400 font-medium">artefak baru</span>
+                    <span class="text-[11px] text-gray-400 font-medium">koleksi budaya baru</span>
                 </div>
                 <!-- Elemen Box transparan di background -->
                 <div class="absolute -right-4 -bottom-6 opacity-20 text-gray-300">

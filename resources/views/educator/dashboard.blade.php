@@ -63,7 +63,11 @@
                 </div>
                 <div class="p-6 flex flex-col flex-grow">
                     <h3 class="text-xl font-serif text-gray-900 mb-2 leading-tight">{{ $materi->judul }}</h3>
-                    <p class="text-sm text-gray-600 mb-6 flex-grow leading-relaxed">{{ Str::limit($materi->konten ?? 'Belum ada konten materi.', 100) }}</p>
+                    @php
+                        $kontenData = json_decode($materi->konten, true);
+                        $preview = is_array($kontenData) ? ($kontenData['deskripsi_umum'] ?? 'Belum ada konten materi.') : ($materi->konten ?? 'Belum ada konten materi.');
+                    @endphp
+                    <p class="text-sm text-gray-600 mb-6 flex-grow leading-relaxed">{{ Str::limit(strip_tags($preview), 100) }}</p>
                     
                     <div class="flex items-center justify-between text-xs text-gray-500 font-medium mb-5">
                         <div class="flex items-center gap-1.5">
@@ -76,10 +80,10 @@
                         </div>
                     </div>
                     
-                    <button class="w-full py-2.5 border border-[#86515c] text-[#86515c] rounded font-semibold text-sm hover:bg-[#86515c] hover:text-white transition flex items-center justify-center gap-2">
+                    <a href="{{ route('educator.modul.edit', $materi->id) }}" class="w-full py-2.5 border border-[#86515c] text-[#86515c] rounded font-semibold text-sm hover:bg-[#86515c] hover:text-white transition flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         Lanjutkan Menyusun
-                    </button>
+                    </a>
                 </div>
             </div>
             @empty
@@ -107,7 +111,7 @@
             <table class="w-full text-left text-sm">
                 <thead>
                     <tr class="text-xs text-gray-500 font-bold uppercase tracking-wider border-b border-[#f2ebe3]">
-                        <th class="px-6 py-4">NIK Artefak</th>
+                        <th class="px-6 py-4">NIK Koleksi Budaya</th>
                         <th class="px-6 py-4">Nama Aset</th>
                         <th class="px-6 py-4">Format File</th>
                         <th class="px-6 py-4">Status</th>

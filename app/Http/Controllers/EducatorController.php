@@ -42,7 +42,7 @@ class EducatorController extends Controller
                   ->orWhere('nomor_inventaris_final', 'like', '%' . $request->search . '%');
         }
 
-        $koleksi = $query->orderBy('updated_at', 'desc')->paginate(12);
+        $koleksi = $query->with('modul')->orderBy('updated_at', 'desc')->paginate(12);
         $kategori = \App\Models\Kategori::all();
 
         return view('educator.koleksi', compact('koleksi', 'kategori'));
@@ -57,7 +57,9 @@ class EducatorController extends Controller
             return redirect()->route('educator.koleksi')->with('error', 'Koleksi belum disetujui.');
         }
 
-        return view('educator.koleksi_show', compact('koleksi'));
+        $modulTerkait = ModulEdukasi::where('koleksi_id', $koleksi->id)->first();
+
+        return view('educator.koleksi_show', compact('koleksi', 'modulTerkait'));
     }
 
     public function createModul(Request $request)
@@ -75,18 +77,71 @@ class EducatorController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'konten' => 'required|string',
+            'deskripsi_umum' => 'required|string',
+            'sejarah_makna' => 'nullable|string',
             'koleksi_id' => 'nullable|exists:koleksi,id'
         ]);
 
+        if ($request->koleksi_id) {
+            $existingModul = ModulEdukasi::where('koleksi_id', $request->koleksi_id)->first();
+            if ($existingModul) {
+                return redirect()->route('educator.dashboard')->with('error', 'Modul edukasi untuk artefak ini sudah ada.');
+            }
+        }
+
         $modul = new ModulEdukasi();
         $modul->judul = $request->judul;
-        $modul->konten = $request->konten;
+        $modul->konten = json_encode([
+            'deskripsi_umum' => $request->deskripsi_umum,
+            'sejarah_makna' => $request->sejarah_makna
+        ]);
         $modul->koleksi_id = $request->koleksi_id;
         $modul->penulis_id = \Illuminate\Support\Facades\Auth::id();
         $modul->status = 'draf';
         $modul->save();
 
         return redirect()->route('educator.dashboard')->with('success', 'Draf modul edukasi berhasil disimpan.');
+    }
+
+    public function editModul($id)
+    {
+        $modul = ModulEdukasi::findOrFail($id);
+        $koleksi = $modul->koleksi_id ? Koleksi::find($modul->koleksi_id) : null;
+        
+        $kontenData = json_decode($modul->konten, true);
+        $deskripsi_umum = is_array($kontenData) ? ($kontenData['deskripsi_umum'] ?? '') : $modul->konten;
+        $sejarah_makna = is_array($kontenData) ? ($kontenData['sejarah_makna'] ?? '') : '';
+
+        return view('educator.modul_edit', compact('modul', 'koleksi', 'deskripsi_umum', 'sejarah_makna'));
+    }
+
+    public function updateModul(Request $request, $id)
+    {
+        $modul = ModulEdukasi::findOrFail($id);
+        
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi_umum' => 'required|string',
+            'sejarah_makna' => 'nullable|string',
+        ]);
+
+        $modul->judul = $request->judul;
+        $modul->konten = json_encode([
+            'deskripsi_umum' => $request->deskripsi_umum,
+            'sejarah_makna' => $request->sejarah_makna
+        ]);
+        
+        // Cek action (Batal/Simpan Draf/Publis)
+        if ($request->action === 'publis') {
+            $modul->status = 'menunggu_persetujuan'; // atau status yang sesuai
+            $msg = 'Modul berhasil dipublikasi (Menunggu Persetujuan).';
+        } else {
+            $modul->status = 'draf';
+            $msg = 'Draf modul berhasil diperbarui.';
+        }
+        
+        $modul->save();
+
+        return redirect()->route('educator.dashboard')->with('success', $msg);
     }
 }

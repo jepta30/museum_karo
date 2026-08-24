@@ -16,4 +16,9 @@ class Koleksi extends Model
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
+
+    public function modul()
+    {
+        return $this->hasOne(ModulEdukasi::class, 'koleksi_id');
+    }
 }

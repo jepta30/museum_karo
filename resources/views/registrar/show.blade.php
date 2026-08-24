@@ -15,7 +15,7 @@
 
     <!-- Roadmap / Progress Tracker -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 mb-8">
-        <h2 class="text-lg font-bold text-gray-800 mb-6 font-serif">Status Kurasi Artefak</h2>
+        <h2 class="text-lg font-bold text-gray-800 mb-6 font-serif">Status Kurasi Koleksi Budaya</h2>
         
         <div class="relative flex items-center justify-between">
             <!-- Line Behind -->
@@ -101,7 +101,7 @@
 
             <!-- Detail Koleksi -->
             <div>
-                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2 mb-4">Spesifikasi Artefak</h3>
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2 mb-4">Spesifikasi Koleksi Budaya</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <p class="text-xs text-gray-500 mb-1">Nama Koleksi (Sementara)</p>
@@ -135,7 +135,7 @@
             <div>
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2 mb-4">Lampiran Foto</h3>
                 <div class="w-full md:w-1/2 aspect-[4/3] rounded-xl overflow-hidden border border-gray-200">
-                    <img src="{{ Storage::url($koleksi->path_foto) }}" alt="Foto Artefak" class="w-full h-full object-cover">
+                    <img src="{{ Storage::url($koleksi->path_foto) }}" alt="Foto Koleksi Budaya" class="w-full h-full object-cover">
                 </div>
             </div>
             @endif

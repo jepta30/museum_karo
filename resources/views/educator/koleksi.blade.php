@@ -5,11 +5,11 @@
     <div class="flex justify-between items-end mb-8">
         <div>
             <h1 class="text-3xl font-serif font-bold text-museum-red mb-2">Pustaka Koleksi Budaya</h1>
-            <p class="text-gray-600">Jelajahi dan pilih artefak yang telah disetujui untuk diubah menjadi materi edukasi.</p>
+            <p class="text-gray-600">Jelajahi dan pilih koleksi budaya yang telah disetujui untuk diubah menjadi materi edukasi.</p>
         </div>
         
         <form action="{{ route('educator.koleksi') }}" method="GET" class="relative w-72">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari artefak atau NIK..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red text-sm">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari koleksi budaya atau NIK..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red text-sm">
             <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </form>
     </div>
@@ -35,12 +35,24 @@
                     <a href="{{ route('educator.koleksi.show', $item->id) }}" class="font-bold text-gray-900 leading-tight mb-2 flex-grow hover:text-museum-red transition">{{ $item->nama_sementara }}</a>
                     
                     <div class="mt-4 flex gap-2">
-                        <form action="{{ route('educator.modul.create') }}" method="GET" class="w-full">
-                            <input type="hidden" name="koleksi_id" value="{{ $item->id }}">
-                            <button type="submit" class="w-full py-1.5 bg-museum-red text-white text-xs font-semibold rounded hover:bg-red-900 transition text-center">
-                                Buat Modul
-                            </button>
-                        </form>
+                        @if($item->modul)
+                            @if($item->modul->status === 'draf')
+                                <div class="w-full py-1.5 bg-orange-100 text-orange-800 text-xs font-semibold rounded text-center border border-orange-200">
+                                    Status: Draf
+                                </div>
+                            @else
+                                <div class="w-full py-1.5 bg-green-100 text-green-800 text-xs font-semibold rounded text-center border border-green-200">
+                                    Terverifikasi
+                                </div>
+                            @endif
+                        @else
+                            <form action="{{ route('educator.modul.create') }}" method="GET" class="w-full">
+                                <input type="hidden" name="koleksi_id" value="{{ $item->id }}">
+                                <button type="submit" class="w-full py-1.5 bg-museum-red text-white text-xs font-semibold rounded hover:bg-red-900 transition text-center">
+                                    Buat Modul
+                                </button>
+                            </form>
+                        @endif
                         <a href="{{ Storage::url($item->path_foto) }}" download class="px-3 py-1.5 border border-gray-300 text-gray-600 rounded hover:bg-gray-50 flex items-center justify-center shrink-0" title="Unduh Aset">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         </a>

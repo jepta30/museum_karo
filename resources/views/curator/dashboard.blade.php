@@ -63,7 +63,7 @@
             </div>
             <div class="flex-1 flex flex-col justify-center">
                 <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-3 leading-tight">{{ $selectedCollection->nama_sementara }}</h1>
-                <p class="text-sm text-gray-600 mb-6">Artefak didaftarkan pada {{ $selectedCollection->created_at->translatedFormat('d F Y') }} oleh <span class="font-semibold">{{ $selectedCollection->nama_penyerah }}</span> (Pendaftar).</p>
+                <p class="text-sm text-gray-600 mb-6">koleksi budaya didaftarkan pada {{ $selectedCollection->created_at->translatedFormat('d F Y') }} oleh <span class="font-semibold">{{ $selectedCollection->nama_penyerah }}</span> (Pendaftar).</p>
                 
                 <div class="flex gap-4">
                     <div class="bg-[#fbf7f5] border border-[#ecdce0] p-3 rounded-md min-w-[120px]">
