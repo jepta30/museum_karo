@@ -22,8 +22,8 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // Redirect based on role (for now, redirect to dashboard)
-            return redirect()->intended('/');
+            // Redirect based on role
+            return redirect('/dashboard');
         }
 
         return back()->withErrors([
@@ -38,6 +38,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/');
     }
 }

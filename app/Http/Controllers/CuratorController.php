@@ -10,6 +10,26 @@ class CuratorController extends Controller
 {
     public function index(Request $request)
     {
+        $koleksi = Koleksi::orderBy('updated_at', 'desc')->paginate(10);
+        
+        $countMenunggu = Koleksi::where('status', 'menunggu_kurasi')
+                                ->whereNull('sejarah_asal_usul')
+                                ->whereNull('kondisi_kuratorial')
+                                ->count();
+                                
+        $countPenelitian = Koleksi::where('status', 'menunggu_kurasi')
+                                  ->where(function($q) {
+                                      $q->whereNotNull('sejarah_asal_usul')
+                                        ->orWhereNotNull('kondisi_kuratorial');
+                                  })->count();
+                                  
+        $countSelesai = Koleksi::whereIn('status', ['menunggu_persetujuan', 'disetujui', 'dipublikasi'])->count();
+
+        return view('curator.dashboard', compact('koleksi', 'countMenunggu', 'countPenelitian', 'countSelesai'));
+    }
+
+    public function kurasi(Request $request)
+    {
         $pendingCollections = Koleksi::whereIn('status', ['menunggu_kurasi', 'menunggu_persetujuan', 'disetujui'])
                                         ->orderBy('updated_at', 'desc')
                                         ->get();
@@ -26,22 +46,40 @@ class CuratorController extends Controller
         // Generate draft inventory number if empty
         if ($selectedCollection && empty($selectedCollection->draf_nomor_inventaris)) {
             $receiveDate = \Carbon\Carbon::parse($selectedCollection->tanggal_terima);
-            $yearFront = $receiveDate->format('y'); // 2 digit tahun masuk
-            
+            $yearFront = $receiveDate->format('y');
             $yearFull = (int) $receiveDate->format('Y');
-            $middleNumber = str_pad($yearFull - 2009, 2, '0', STR_PAD_LEFT); // Tahun ke-berapa sejak 2009
+            $middleNumber = str_pad($yearFull - 2009, 2, '0', STR_PAD_LEFT);
             
-            // Get total count of items that arrived before or up to this item's creation
             $sequence = \App\Models\Koleksi::where('id', '<=', $selectedCollection->id)->count();
-            // Start from 1000 or 1 based on preference. User says "jumlah barang". So just the count.
-            // If we pad it to 4 digits:
             $paddedSeq = str_pad($sequence, 4, '0', STR_PAD_LEFT);
             
             $generatedDraft = "{$yearFront}.{$middleNumber}.{$paddedSeq}";
             $selectedCollection->draf_nomor_inventaris = $generatedDraft;
         }
 
-        return view('curator.dashboard', compact('pendingCollections', 'selectedCollection', 'categories'));
+        return view('curator.kurasi', compact('pendingCollections', 'selectedCollection', 'categories'));
+    }
+
+    public function edit($id)
+    {
+        $selectedCollection = Koleksi::with('kategori')->findOrFail($id);
+        $categories = Kategori::all();
+
+        // Generate draft inventory number if empty
+        if (empty($selectedCollection->draf_nomor_inventaris)) {
+            $receiveDate = \Carbon\Carbon::parse($selectedCollection->tanggal_terima);
+            $yearFront = $receiveDate->format('y');
+            $yearFull = (int) $receiveDate->format('Y');
+            $middleNumber = str_pad($yearFull - 2009, 2, '0', STR_PAD_LEFT);
+            
+            $sequence = \App\Models\Koleksi::where('id', '<=', $selectedCollection->id)->count();
+            $paddedSeq = str_pad($sequence, 4, '0', STR_PAD_LEFT);
+            
+            $generatedDraft = "{$yearFront}.{$middleNumber}.{$paddedSeq}";
+            $selectedCollection->draf_nomor_inventaris = $generatedDraft;
+        }
+
+        return view('curator.edit', compact('selectedCollection', 'categories'));
     }
 
     public function update(Request $request, $id)

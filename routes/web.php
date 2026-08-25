@@ -12,16 +12,23 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middl
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    }
+    return view('welcome');
+})->name('home');
+
 Route::middleware('auth')->group(function () {
     
     // Redirect otomatis berdasarkan peran
-    Route::get('/', function () {
+    Route::get('/dashboard', function () {
         $peran = Auth::user()->peran;
         if ($peran === 'kurator') return redirect()->route('curator.dashboard');
         if ($peran === 'pimpinan') return redirect()->route('leader.dashboard');
         if ($peran === 'edukator') return redirect()->route('educator.dashboard');
         return redirect()->route('registrar.dashboard');
-    });
+    })->name('dashboard');
 
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');
@@ -31,6 +38,8 @@ Route::middleware('auth')->group(function () {
 
     // Rute Kurator
     Route::get('/curator', [CuratorController::class, 'index'])->name('curator.dashboard');
+    Route::get('/curator/kurasi', [CuratorController::class, 'kurasi'])->name('curator.kurasi');
+    Route::get('/curator/collections/{id}/edit', [CuratorController::class, 'edit'])->name('curator.edit');
     Route::post('/curator/collections/{id}', [CuratorController::class, 'update'])->name('curator.update');
     Route::get('/curator/collections/{id}/berita-acara', [CuratorController::class, 'generateBeritaAcara'])->name('curator.berita_acara');
     Route::get('/curator/repository', [CuratorController::class, 'repository'])->name('curator.repository');
@@ -46,10 +55,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/educator', [App\Http\Controllers\EducatorController::class, 'index'])->name('educator.dashboard');
     Route::get('/educator/koleksi', [App\Http\Controllers\EducatorController::class, 'koleksi'])->name('educator.koleksi');
     Route::get('/educator/koleksi/{id}', [App\Http\Controllers\EducatorController::class, 'showKoleksi'])->name('educator.koleksi.show');
+    Route::get('/educator/alat-edukasi', [App\Http\Controllers\EducatorController::class, 'alatEdukasi'])->name('educator.alat_edukasi');
     
     // Rute Modul Edukasi
     Route::get('/educator/modul/create', [App\Http\Controllers\EducatorController::class, 'createModul'])->name('educator.modul.create');
     Route::post('/educator/modul/store', [App\Http\Controllers\EducatorController::class, 'storeModul'])->name('educator.modul.store');
+    Route::get('/educator/modul/{id}', [App\Http\Controllers\EducatorController::class, 'showModul'])->name('educator.modul.show');
     Route::get('/educator/modul/{id}/edit', [App\Http\Controllers\EducatorController::class, 'editModul'])->name('educator.modul.edit');
     Route::post('/educator/modul/{id}/update', [App\Http\Controllers\EducatorController::class, 'updateModul'])->name('educator.modul.update');
+    Route::post('/educator/modul/{id}/unpublish', [App\Http\Controllers\EducatorController::class, 'unpublishModul'])->name('educator.modul.unpublish');
 });

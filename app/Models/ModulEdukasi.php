@@ -15,4 +15,9 @@ class ModulEdukasi extends Model
     {
         return $this->belongsTo(User::class, 'penulis_id');
     }
+
+    public function koleksi()
+    {
+        return $this->belongsTo(Koleksi::class, 'koleksi_id');
+    }
 }
