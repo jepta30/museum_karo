@@ -56,9 +56,13 @@
             @forelse($materiPembelajaran as $materi)
             <div class="bg-[#fcfaf8] border border-[#f2ebe3] rounded-lg overflow-hidden shadow-sm flex flex-col">
                 <div class="h-48 bg-gray-200 relative">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode($materi->judul) }}&background=E5D1D5&color=6d3e3e&size=400" alt="Cover" class="w-full h-full object-cover opacity-80">
+                    @if($materi->koleksi && $materi->koleksi->path_foto)
+                        <img src="{{ Storage::url($materi->koleksi->path_foto) }}" alt="Cover" class="w-full h-full object-cover opacity-90">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($materi->judul) }}&background=E5D1D5&color=6d3e3e&size=400" alt="Cover" class="w-full h-full object-cover opacity-80">
+                    @endif
                     <div class="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">
-                        {{ ucfirst($materi->status) }}
+                        {{ ucfirst(str_replace('_', ' ', $materi->status)) }}
                     </div>
                 </div>
                 <div class="p-6 flex flex-col flex-grow">
@@ -88,10 +92,7 @@
             </div>
             @empty
             <div class="col-span-2 text-center py-12 bg-[#fcfaf8] border border-[#f2ebe3] border-dashed rounded-lg">
-                <p class="text-gray-500 font-medium">Belum ada draf materi pembelajaran.</p>
-                <button class="mt-4 px-6 py-2 bg-museum-red text-white font-semibold rounded hover:bg-red-800 transition">
-                    + Buat Draf Baru
-                </button>
+                <p class="text-gray-500 font-medium">Belum ada draf materi pembelajaran yang sedang disusun.</p>
             </div>
             @endforelse
         </div>

@@ -19,6 +19,17 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/koleksi/{id}', function ($id) {
+    $modul = \App\Models\ModulEdukasi::with('koleksi.kategori')->where('status', 'diterbitkan')->findOrFail($id);
+    
+    $koleksi = $modul->koleksi;
+    $kontenData = json_decode($modul->konten, true);
+    $deskripsi_umum = is_array($kontenData) ? ($kontenData['deskripsi_umum'] ?? '') : $modul->konten;
+    $sejarah_makna = is_array($kontenData) ? ($kontenData['sejarah_makna'] ?? '') : '';
+
+    return view('koleksi_detail', compact('modul', 'koleksi', 'deskripsi_umum', 'sejarah_makna'));
+})->name('koleksi.detail');
+
 Route::middleware('auth')->group(function () {
     
     // Redirect otomatis berdasarkan peran

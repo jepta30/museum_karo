@@ -73,7 +73,13 @@
                 <div class="bg-white p-6 rounded-lg shadow border border-gray-200 text-center max-w-sm">
                     <svg class="w-12 h-12 text-green-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <p class="text-gray-800 font-bold mb-1">Riset Sudah Diajukan</p>
-                    <p class="text-sm text-gray-500">Koleksi budaya ini sedang atau sudah diproses oleh Pimpinan. Form dikunci.</p>
+                    <p class="text-sm text-gray-500 mb-4">Koleksi budaya ini sedang atau sudah diproses oleh Pimpinan. Form dikunci.</p>
+                    
+                    @if($selectedCollection->status === 'disetujui' || $selectedCollection->status === 'dipublikasi')
+                        <a href="{{ route('curator.berita_acara', $selectedCollection->id) }}" class="inline-block px-4 py-2 bg-museum-red text-white text-sm font-semibold rounded hover:bg-red-800 transition">
+                            Unduh Berita Acara
+                        </a>
+                    @endif
                 </div>
             </div>
         @endif

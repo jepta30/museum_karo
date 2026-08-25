@@ -180,7 +180,7 @@
                         <p class="text-[11px] font-bold text-[#8b1c1c] uppercase tracking-wider mb-2">
                             {{ $koleksi && $koleksi->kategori ? $koleksi->kategori->nama_kategori : 'KATEGORI UMUM' }}
                         </p>
-                        <a href="#" class="inline-block mb-3">
+                        <a href="{{ route('koleksi.detail', $modul->id) }}" class="inline-block mb-3">
                             <h3 class="text-[22px] font-serif font-bold text-[#1a237e] underline decoration-1 underline-offset-4 group-hover:text-[#8b1c1c] transition leading-snug">
                                 {{ $modul->judul }}
                             </h3>

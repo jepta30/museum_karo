@@ -25,8 +25,9 @@ class EducatorController extends Controller
                               ->take(5)
                               ->get();
 
-        // Ambil data Modul Edukasi sebagai "Draf Materi Pembelajaran"
-        $materiPembelajaran = ModulEdukasi::orderBy('updated_at', 'desc')
+        // Ambil data Modul Edukasi sebagai "Draf Materi Pembelajaran" (tidak termasuk yang diterbitkan)
+        $materiPembelajaran = ModulEdukasi::with('koleksi')->where('status', '!=', 'diterbitkan')
+                                          ->orderBy('updated_at', 'desc')
                                           ->take(4)
                                           ->get();
 
