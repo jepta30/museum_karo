@@ -152,24 +152,116 @@ class CuratorController extends Controller
     public function storeDokumen(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'kategori' => 'required|string|max:255',
-            'file_dokumen' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:20480', // Max 20MB
+            'judul_dokumen' => 'required|string|max:255',
+            'file_dokumen' => 'required|file|mimes:pdf|max:5120',
         ]);
 
-        $file = $request->file('file_dokumen');
-        $path = $file->store('repositori', 'public');
-        
-        $ukuranBytes = $file->getSize();
-        $ukuranMB = number_format($ukuranBytes / 1048576, 2) . ' MB';
+        $path = $request->file('file_dokumen')->store('dokumen', 'public');
 
         \App\Models\DokumenRepositori::create([
-            'nama' => $request->nama,
-            'kategori' => $request->kategori,
-            'path_file' => $path,
-            'ukuran' => $ukuranMB
+            'judul_dokumen' => $request->judul_dokumen,
+            'path_dokumen' => $path,
+            'diunggah_oleh' => \Illuminate\Support\Facades\Auth::id()
         ]);
 
         return redirect()->route('curator.repository')->with('success', 'Dokumen berhasil diunggah ke repositori.');
+    }
+
+    public function komentar()
+    {
+        $komentars = \App\Models\Komentar::with('koleksi')->where('status', 'menunggu')->latest()->get();
+        return view('curator.komentar', compact('komentars'));
+    }
+
+    public function approveKomentar($id)
+    {
+        $komentar = \App\Models\Komentar::findOrFail($id);
+        $komentar->update(['status' => 'disetujui']);
+        return redirect()->route('curator.komentar')->with('success', 'Komentar berhasil disetujui dan diterbitkan.');
+    }
+
+    public function rejectKomentar($id)
+    {
+        $komentar = \App\Models\Komentar::findOrFail($id);
+        $komentar->delete();
+        return redirect()->route('curator.komentar')->with('success', 'Komentar ditolak dan dihapus.');
+    }
+
+    public function katalogPengunjung(Request $request)
+    {
+        $query = \App\Models\BukuTamu::query();
+        
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where('nama', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%")
+                  ->orWhere('pekerjaan', 'like', "%{$search}%");
+        }
+        
+        if ($request->has('date') && $request->date != '') {
+            $query->whereDate('tanggal', $request->date);
+        }
+
+        $bukuTamu = $query->latest('tanggal')->latest('id')->get();
+
+        // Real Statistics
+        $totalKunjungan = \App\Models\KunjunganWebsite::count();
+        
+        $desktopCount = \App\Models\KunjunganWebsite::where('device_type', 'desktop')->count();
+        $mobileCount = \App\Models\KunjunganWebsite::where('device_type', 'mobile')->count();
+
+        // Top Koleksi
+        $topKoleksiData = \App\Models\KunjunganWebsite::whereNotNull('koleksi_id')
+            ->select('koleksi_id', \Illuminate\Support\Facades\DB::raw('count(*) as views'))
+            ->groupBy('koleksi_id')
+            ->orderByDesc('views')
+            ->limit(3)
+            ->get();
+            
+        $topKoleksi = [];
+        foreach ($topKoleksiData as $tk) {
+            $koleksi = \App\Models\Koleksi::find($tk->koleksi_id);
+            if ($koleksi) {
+                $topKoleksi[] = [
+                    'nama' => $koleksi->nama_sementara ?? 'Koleksi',
+                    'views' => $tk->views
+                ];
+            }
+        }
+
+        // Tren Kunjungan Harian (Last 7 days)
+        $trenKunjungan = \App\Models\KunjunganWebsite::select(
+            \Illuminate\Support\Facades\DB::raw('DATE(created_at) as date'),
+            \Illuminate\Support\Facades\DB::raw('count(*) as views')
+        )
+        ->groupBy('date')
+        ->orderByDesc('date')
+        ->limit(7)
+        ->get()
+        ->reverse()
+        ->values();
+
+        return view('curator.katalog_pengunjung', compact('bukuTamu', 'topKoleksi', 'totalKunjungan', 'desktopCount', 'mobileCount', 'trenKunjungan'));
+    }
+
+    public function storeBukuTamu(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'nullable|string|max:255',
+            'pekerjaan' => 'nullable|string|max:255',
+            'tanggal' => 'required|date',
+        ]);
+
+        \App\Models\BukuTamu::create($request->all());
+
+        return redirect()->route('curator.katalog')->with('success', 'Kunjungan berhasil dicatat.');
+    }
+
+    public function deleteBukuTamu($id)
+    {
+        $bukuTamu = \App\Models\BukuTamu::findOrFail($id);
+        $bukuTamu->delete();
+        return redirect()->route('curator.katalog')->with('success', 'Catatan kunjungan berhasil dihapus.');
     }
 }

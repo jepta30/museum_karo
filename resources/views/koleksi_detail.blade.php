@@ -135,20 +135,90 @@
         </div>
 
         <!-- Tabs -->
-        <div class="border-b border-gray-200 mb-8 flex gap-8 px-2 overflow-x-auto">
-            <button class="pb-4 text-sm font-bold text-gray-900 border-b-2 border-[#8b1c1c] uppercase tracking-wider whitespace-nowrap">Deskripsi</button>
-            <button class="pb-4 text-sm font-bold text-gray-400 hover:text-gray-700 uppercase tracking-wider whitespace-nowrap">Sejarah</button>
-            <button class="pb-4 text-sm font-bold text-gray-400 hover:text-gray-700 uppercase tracking-wider whitespace-nowrap">Galeri</button>
-            <button class="pb-4 text-sm font-bold text-gray-400 hover:text-gray-700 uppercase tracking-wider whitespace-nowrap">Komentar</button>
+        <div class="border-b border-gray-200 mb-8 flex gap-8 px-2 overflow-x-auto" id="tab-buttons">
+            <button onclick="switchTab('deskripsi')" id="btn-deskripsi" class="tab-btn pb-4 text-sm font-bold text-gray-900 border-b-2 border-[#8b1c1c] uppercase tracking-wider whitespace-nowrap">Deskripsi</button>
+            <button onclick="switchTab('sejarah')" id="btn-sejarah" class="tab-btn pb-4 text-sm font-bold text-gray-400 hover:text-gray-700 uppercase tracking-wider whitespace-nowrap border-b-2 border-transparent">Sejarah</button>
+            <button onclick="switchTab('galeri')" id="btn-galeri" class="tab-btn pb-4 text-sm font-bold text-gray-400 hover:text-gray-700 uppercase tracking-wider whitespace-nowrap border-b-2 border-transparent">Galeri</button>
+            <button onclick="switchTab('komentar')" id="btn-komentar" class="tab-btn pb-4 text-sm font-bold text-gray-400 hover:text-gray-700 uppercase tracking-wider whitespace-nowrap border-b-2 border-transparent">Komentar</button>
         </div>
 
         <!-- Content Area -->
-        <div class="bg-white border border-gray-200 rounded-xl p-8 shadow-sm text-gray-700 leading-relaxed max-w-4xl">
-            @if($deskripsi_umum)
-                {!! nl2br(e($deskripsi_umum)) !!}
-            @else
-                <p class="text-gray-400 italic">Belum ada deskripsi yang ditambahkan untuk koleksi ini.</p>
-            @endif
+        <div class="bg-white border border-gray-200 rounded-xl p-8 shadow-sm text-gray-700 leading-relaxed max-w-4xl min-h-[200px]">
+            <!-- Deskripsi Content -->
+            <div id="content-deskripsi" class="tab-content">
+                @if($deskripsi_umum)
+                    {!! nl2br(e($deskripsi_umum)) !!}
+                @else
+                    <p class="text-gray-400 italic">Belum ada deskripsi yang ditambahkan untuk koleksi ini.</p>
+                @endif
+            </div>
+
+            <!-- Sejarah Content -->
+            <div id="content-sejarah" class="tab-content hidden">
+                @if($sejarah_makna)
+                    {!! nl2br(e($sejarah_makna)) !!}
+                @elseif($koleksi && $koleksi->sejarah_asal_usul)
+                    {!! nl2br(e($koleksi->sejarah_asal_usul)) !!}
+                @else
+                    <p class="text-gray-400 italic">Belum ada data sejarah yang ditambahkan untuk koleksi ini.</p>
+                @endif
+            </div>
+
+            <!-- Galeri Content -->
+            <div id="content-galeri" class="tab-content hidden">
+                <p class="text-gray-400 italic">Galeri foto belum tersedia.</p>
+            </div>
+
+            <!-- Komentar Content -->
+            <div id="content-komentar" class="tab-content hidden space-y-8">
+                
+                @if(session('success_komentar'))
+                    <div class="p-4 bg-green-50 border border-green-200 text-green-700 rounded-md text-sm mb-6 font-medium">
+                        {{ session('success_komentar') }}
+                    </div>
+                @endif
+
+                @if($komentars->isEmpty())
+                    <p class="text-gray-500 italic mb-6">Belum ada komentar. Jadilah yang pertama berkomentar!</p>
+                @else
+                    <div class="space-y-6 mb-8">
+                        @foreach($komentars as $komentar)
+                            <div class="bg-gray-50 p-5 rounded-lg border border-gray-100">
+                                <h4 class="font-bold text-gray-900">{{ $komentar->nama }}</h4>
+                                <span class="text-xs text-gray-400">{{ $komentar->created_at->diffForHumans() }}</span>
+                                <p class="text-sm text-gray-700 mt-2">{{ $komentar->isi_komentar }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <div class="bg-[#fcfcfc] border border-gray-200 p-8 rounded-xl shadow-sm">
+                    <h3 class="text-xl font-serif font-bold text-gray-900 mb-6">Tinggalkan Jejak / Pertanyaan</h3>
+                    
+                    <form action="{{ route('koleksi.komentar', $modul->id) }}" method="POST" class="space-y-6">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-2">Nama Anda *</label>
+                                <input type="text" name="nama" required placeholder="Cth: Budi Tarigan" class="w-full px-4 py-2 border border-gray-300 rounded text-sm focus:ring-[#8b1c1c] focus:border-[#8b1c1c]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-2">Email (Opsional)</label>
+                                <input type="email" name="email" placeholder="Tidak akan dipublikasikan" class="w-full px-4 py-2 border border-gray-300 rounded text-sm focus:ring-[#8b1c1c] focus:border-[#8b1c1c]">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-2">Isi Komentar *</label>
+                            <textarea name="isi_komentar" required rows="4" placeholder="Tulis pendapat atau kenangan Anda tentang budaya ini..." class="w-full px-4 py-3 border border-gray-300 rounded text-sm focus:ring-[#8b1c1c] focus:border-[#8b1c1c] resize-y"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="px-6 py-2.5 bg-[#8b1c1c] text-white text-sm font-semibold rounded hover:bg-red-800 transition shadow-sm">
+                            Kirim Komentar
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -160,5 +230,26 @@
         </div>
     </footer>
 
+    <script>
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Show target content
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+
+            // Reset all buttons styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-gray-900', 'border-[#8b1c1c]');
+                btn.classList.add('text-gray-400', 'border-transparent');
+            });
+
+            // Set active button style
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-gray-400', 'border-transparent');
+            activeBtn.classList.add('text-gray-900', 'border-[#8b1c1c]');
+        }
+    </script>
 </body>
 </html>

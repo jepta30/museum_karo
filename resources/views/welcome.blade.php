@@ -296,6 +296,77 @@
         </div>
     </footer>
 
+    <!-- Modal Buku Tamu -->
+    @if(!session()->has('buku_tamu_filled'))
+    <div id="modal-buku-tamu" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden relative">
+            <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-serif font-bold text-xl text-gray-900">Buku Tamu Pengunjung</h3>
+                <button type="button" onclick="closeBukuTamu()" class="text-gray-400 hover:text-gray-700 transition focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form action="{{ route('buku_tamu.store') }}" method="POST" class="p-8">
+                @csrf
+                <p class="text-sm text-gray-600 mb-6">Selamat datang di Museum Pusaka Karo. Mohon isi data kunjungan Anda terlebih dahulu.</p>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
+                        <input type="text" name="nama" required class="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:border-[#8b1c1c] focus:ring-[#8b1c1c] outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Alamat</label>
+                        <input type="text" name="alamat" class="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:border-[#8b1c1c] focus:ring-[#8b1c1c] outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Pekerjaan</label>
+                        <input type="text" name="pekerjaan" class="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:border-[#8b1c1c] focus:ring-[#8b1c1c] outline-none transition">
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-end">
+                    <button type="submit" class="px-6 py-2.5 bg-[#752626] text-white text-sm font-semibold rounded hover:bg-red-900 transition shadow-sm w-full sm:w-auto">Kirim Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function closeBukuTamu() {
+            document.getElementById('modal-buku-tamu').classList.add('hidden');
+            localStorage.setItem('buku_tamu_closed', 'true');
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if(localStorage.getItem('buku_tamu_closed') === 'true') {
+                document.getElementById('modal-buku-tamu').classList.add('hidden');
+            }
+        });
+    </script>
+    @endif
+
+    <!-- Modal Success Buku Tamu -->
+    @if(session()->has('success_buku_tamu'))
+    <div id="modal-success-tamu" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[110] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden relative text-center p-8">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+            
+            <h3 class="font-serif font-bold text-2xl text-gray-900 mb-2">Bujur Melala!</h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-8">
+                Terima kasih telah mencatatkan kunjungan Anda. Selamat menelusuri keindahan warisan peninggalan leluhur di <strong>Museum Pusaka Karo</strong>. Mari bersama-sama menjaga jejak leluhur agar tak lekang oleh zaman.
+            </p>
+
+            <button onclick="document.getElementById('modal-success-tamu').classList.add('hidden')" class="w-full px-6 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded hover:bg-black transition shadow-sm">
+                Mulai Menjelajah
+            </button>
+        </div>
+    </div>
+    @endif
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
