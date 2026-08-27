@@ -21,10 +21,26 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            
+            $user = Auth::user();
+            $user->last_login_at = now();
+            $user->save();
+            
+            \App\Models\LogAktivitas::create([
+                'user_id' => $user->id,
+                'nama_pengguna' => $user->name,
+                'aksi' => 'Login ke dalam sistem',
+                'status' => 'Berhasil'
+            ]);
 
-            // Redirect based on role
-            return redirect('/dashboard');
+            return redirect()->intended('/dashboard');
         }
+
+        \App\Models\LogAktivitas::create([
+            'nama_pengguna' => $request->email,
+            'aksi' => 'Percobaan login gagal',
+            'status' => 'Gagal'
+        ]);
 
         return back()->withErrors([
             'email' => 'Kredensial yang diberikan tidak cocok dengan data kami.',

@@ -102,11 +102,20 @@ Route::middleware('auth')->group(function () {
     // Redirect otomatis berdasarkan peran
     Route::get('/dashboard', function () {
         $peran = Auth::user()->peran;
+        if ($peran === 'admin') return redirect()->route('admin.dashboard');
         if ($peran === 'kurator') return redirect()->route('curator.dashboard');
         if ($peran === 'pimpinan') return redirect()->route('leader.dashboard');
         if ($peran === 'edukator') return redirect()->route('educator.dashboard');
         return redirect()->route('registrar.dashboard');
     })->name('dashboard');
+
+    // Rute Admin
+    Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/users', [\App\Http\Controllers\AdminController::class, 'users'])->name('admin.users');
+    Route::get('/admin/logs', [\App\Http\Controllers\AdminController::class, 'logs'])->name('admin.logs');
+    Route::get('/admin/logs/export', [\App\Http\Controllers\AdminController::class, 'exportLogs'])->name('admin.logs.export');
+    Route::get('/admin/roles', [\App\Http\Controllers\AdminController::class, 'roles'])->name('admin.roles');
+    Route::post('/admin/roles/store', [\App\Http\Controllers\AdminController::class, 'storeUser'])->name('admin.store_user');
 
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');
