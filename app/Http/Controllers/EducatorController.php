@@ -119,6 +119,8 @@ class EducatorController extends Controller
 
         $modul = new ModulEdukasi();
         $modul->judul = $request->judul;
+        $modul->latitude = $request->latitude;
+        $modul->longitude = $request->longitude;
         $modul->konten = json_encode([
             'deskripsi_umum' => $request->deskripsi_umum,
             'sejarah_makna' => $request->sejarah_makna
@@ -127,6 +129,13 @@ class EducatorController extends Controller
         $modul->penulis_id = \Illuminate\Support\Facades\Auth::id();
         $modul->status = 'draf';
         $modul->save();
+
+        \App\Models\LogAktivitas::create([
+            'user_id' => auth()->id(),
+            'nama_pengguna' => auth()->user()->name,
+            'aksi' => "Membuat modul edukasi baru: '{$modul->judul}'",
+            'status' => 'Berhasil'
+        ]);
 
         return redirect()->route('educator.dashboard')->with('success', 'Draf modul edukasi berhasil disimpan.');
     }
@@ -154,6 +163,8 @@ class EducatorController extends Controller
         ]);
 
         $modul->judul = $request->judul;
+        $modul->latitude = $request->latitude;
+        $modul->longitude = $request->longitude;
         $modul->konten = json_encode([
             'deskripsi_umum' => $request->deskripsi_umum,
             'sejarah_makna' => $request->sejarah_makna

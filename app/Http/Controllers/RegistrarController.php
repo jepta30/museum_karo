@@ -76,6 +76,13 @@ class RegistrarController extends Controller
             ]);
         }
 
+        \App\Models\LogAktivitas::create([
+            'user_id' => auth()->id(),
+            'nama_pengguna' => auth()->user()->name,
+            'aksi' => "Mendaftarkan " . count($request->nama_sementara) . " koleksi baru (Batch: {$batchId})",
+            'status' => 'Berhasil'
+        ]);
+
         return redirect()->back()->with('success', 'Data koleksi berhasil disimpan!');
     }
 }

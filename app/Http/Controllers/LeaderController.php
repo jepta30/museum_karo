@@ -46,6 +46,13 @@ class LeaderController extends Controller
             'status' => 'disetujui',
         ]);
 
+        \App\Models\LogAktivitas::create([
+            'user_id' => auth()->id(),
+            'nama_pengguna' => auth()->user()->name,
+            'aksi' => "Menyetujui koleksi budaya '{$collection->nama_sementara}' (No. Inv: {$request->nomor_inventaris_final})",
+            'status' => 'Berhasil'
+        ]);
+
         return redirect()->route('leader.dashboard')->with('success', 'Koleksi berhasil disetujui dan ditandatangani.');
     }
 

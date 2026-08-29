@@ -35,6 +35,68 @@ Route::get('/', function () {
     return view('welcome', compact('modulEdukasi', 'totalKoleksi', 'totalKategori'));
 })->name('home');
 
+Route::get('/tentang', function () {
+    $totalWarisan = \App\Models\Koleksi::count();
+    $totalKategori = \App\Models\Kategori::count();
+    return view('tentang', compact('totalWarisan', 'totalKategori'));
+})->name('tentang');
+
+Route::get('/katalog', function (Illuminate\Http\Request $request) {
+    $search = $request->input('search');
+    $kategoriId = $request->input('kategori');
+
+    $query = \App\Models\ModulEdukasi::with('koleksi.kategori')
+        ->where('status', 'diterbitkan');
+
+    if ($search) {
+        $query->where('judul', 'like', "%{$search}%")
+            ->orWhereHas('koleksi', function ($q) use ($search) {
+                $q->where('nama_sementara', 'like', "%{$search}%");
+            });
+    }
+
+    if ($kategoriId) {
+        $query->whereHas('koleksi', function ($q) use ($kategoriId) {
+            $q->where('kategori_id', $kategoriId);
+        });
+    }
+
+    $modulEdukasi = $query->latest()->paginate(12);
+    $kategoriList = \App\Models\Kategori::all();
+
+    return view('katalog', compact('modulEdukasi', 'kategoriList', 'search', 'kategoriId'));
+})->name('katalog');
+
+Route::get('/peta', function () {
+    $moduls = \App\Models\ModulEdukasi::with('koleksi.kategori')
+        ->where('status', 'diterbitkan')
+        ->whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get();
+    
+    return view('peta', compact('moduls'));
+})->name('peta');
+
+Route::get('/saran', function () {
+    return view('saran');
+})->name('saran');
+
+Route::post('/saran', function (Illuminate\Http\Request $request) {
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'email' => 'nullable|email|max:255',
+        'pesan' => 'required|string',
+    ]);
+
+    \App\Models\SaranPesan::create($request->only(['nama', 'email', 'pesan']));
+
+    if ($request->ajax()) {
+        return response()->json(['success' => true, 'message' => 'Terimakasih telah mengisi saran dan pesan']);
+    }
+
+    return redirect()->back()->with('success', 'Terimakasih telah mengisi saran dan pesan');
+})->name('saran.store');
+
 Route::post('/buku-tamu', function (Illuminate\Http\Request $request) {
     $request->validate([
         'nama' => 'required|string|max:255',
@@ -125,6 +187,7 @@ Route::middleware('auth')->group(function () {
 
     // Rute Kurator
     Route::get('/curator', [CuratorController::class, 'index'])->name('curator.dashboard');
+    Route::get('/curator/saran', [CuratorController::class, 'saran'])->name('curator.saran');
     Route::get('/curator/kurasi', [CuratorController::class, 'kurasi'])->name('curator.kurasi');
     Route::get('/curator/collections/{id}/edit', [CuratorController::class, 'edit'])->name('curator.edit');
     Route::post('/curator/collections/{id}', [CuratorController::class, 'update'])->name('curator.update');

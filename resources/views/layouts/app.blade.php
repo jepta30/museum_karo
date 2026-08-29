@@ -13,18 +13,20 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        'museum-red': '#8b1c1c', 
-                        'museum-bg': '#fcfcfc',
-                    },
                     fontFamily: {
-                        'serif': ['"Playfair Display"', 'Georgia', 'serif'], 
-                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                        sans: ['Instrument Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'museum-red': '#8b1c1c',
+                        'museum-dark': '#4a1b1b',
+                        'museum-bg': '#faf7f2',
                     }
                 }
             }
         }
     </script>
+    @stack('styles')
 </head>
 <body class="bg-museum-bg text-gray-800 font-sans h-screen flex overflow-hidden">
 
@@ -117,6 +119,10 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         Katalog Pengunjung
                     </a>
+                    <a href="{{ route('curator.saran') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.saran') ? 'bg-gray-50 text-black font-semibold border-l-4 border-black' : 'text-gray-600 font-medium hover:bg-gray-50' }} rounded-md text-sm mt-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Kesan & Pesan
+                    </a>
                 @elseif(Auth::check() && Auth::user()->peran === 'edukator')
                     <nav class="space-y-1">
                         <a href="{{ route('educator.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('educator.dashboard') ? 'bg-[#fbf7f5] text-museum-red font-semibold border-l-4 border-museum-red' : 'text-gray-500 hover:text-museum-red hover:bg-[#fbf7f5]' }} rounded-md transition group">
@@ -204,5 +210,6 @@
         </main>
     </div>
 
+    @stack('scripts')
 </body>
 </html>

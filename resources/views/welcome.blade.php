@@ -46,10 +46,11 @@
         
         <div class="flex items-center gap-6 text-sm font-semibold text-gray-700">
             <div class="hidden lg:flex items-center gap-6">
-                <a href="#" class="bg-[#8b1c1c] text-white px-5 py-2 rounded-full shadow-md">Beranda</a>
-                <a href="#" class="hover:text-[#8b1c1c] transition">Katalog Koleksi</a>
-                <a href="#" class="hover:text-[#8b1c1c] transition">Peta Titik Asal</a>
-                <a href="#" class="hover:text-[#8b1c1c] transition">Tentang Kami</a>
+                <a href="{{ route('home') }}" class="bg-[#8b1c1c] text-white px-5 py-2 rounded-full shadow-md">Beranda</a>
+                <a href="{{ route('katalog') }}" class="hover:text-[#8b1c1c] transition">Katalog Koleksi</a>
+                <a href="{{ route('peta') }}" class="hover:text-[#8b1c1c] transition">Peta Titik Asal</a>
+                <a href="{{ route('tentang') }}" class="hover:text-[#8b1c1c] transition">Tentang Kami</a>
+                <a href="{{ route('saran') }}" class="hover:text-[#8b1c1c] transition">Saran & Pesan</a>
             </div>
             
             @if (Route::has('login'))

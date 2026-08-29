@@ -107,6 +107,17 @@ class CuratorController extends Controller
             ? 'Rekomendasi berhasil dikirim ke Pimpinan.' 
             : 'Draf riset berhasil disimpan.';
 
+        $logAksi = $status === 'menunggu_persetujuan' 
+            ? "Meneruskan rekomendasi kurasi koleksi '{$collection->nama_sementara}' ke Pimpinan"
+            : "Menyimpan draf kurasi koleksi '{$collection->nama_sementara}'";
+
+        \App\Models\LogAktivitas::create([
+            'user_id' => auth()->id(),
+            'nama_pengguna' => auth()->user()->name,
+            'aksi' => $logAksi,
+            'status' => 'Berhasil'
+        ]);
+
         return redirect()->route('curator.dashboard')->with('success', $message);
     }
 
@@ -263,5 +274,11 @@ class CuratorController extends Controller
         $bukuTamu = \App\Models\BukuTamu::findOrFail($id);
         $bukuTamu->delete();
         return redirect()->route('curator.katalog')->with('success', 'Catatan kunjungan berhasil dihapus.');
+    }
+
+    public function saran()
+    {
+        $saranPesan = \App\Models\SaranPesan::latest()->paginate(15);
+        return view('curator.saran', compact('saranPesan'));
     }
 }

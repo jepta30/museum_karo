@@ -104,6 +104,35 @@
                                   class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm leading-relaxed bg-white resize-y">{{ old('sejarah_makna', $sejarah_makna) }}</textarea>
                     </div>
 
+                    <!-- Peta Titik Asal -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Titik Asal Koleksi (Peta)</label>
+                        <p class="text-xs text-gray-500 mb-3">Geser pin (marker) pada peta atau cari lokasi (fokus pencarian di wilayah Kabupaten Karo) untuk menentukan letak titik asal koleksi.</p>
+                        
+                        <div class="flex flex-col gap-3 mb-3 relative">
+                            <div class="relative w-full">
+                                <input type="text" id="map-search" placeholder="Cari desa / kecamatan di Kab. Karo..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md text-sm focus:border-museum-red">
+                                <div class="absolute left-3 top-2.5 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <button type="button" id="btn-search-map" class="absolute right-2 top-1.5 px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs rounded border border-gray-300">Cari</button>
+                            </div>
+                        </div>
+                        
+                        <div id="locationMap" class="w-full h-80 rounded-md border border-gray-300 shadow-inner z-0"></div>
+                        
+                        <div class="flex gap-4 mt-3">
+                            <div class="flex-1">
+                                <label class="text-[10px] text-gray-500 uppercase font-bold">Latitude</label>
+                                <input type="text" id="latitude" name="latitude" value="{{ $modul->latitude }}" readonly class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                            </div>
+                            <div class="flex-1">
+                                <label class="text-[10px] text-gray-500 uppercase font-bold">Longitude</label>
+                                <input type="text" id="longitude" name="longitude" value="{{ $modul->longitude }}" readonly class="w-full mt-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Aksi -->
                     <div class="flex items-center justify-end gap-3 pt-6 border-t border-[#f2ebe3] bg-[#fdfbf9] -mx-8 -mb-8 px-8 py-4">
                         <a href="{{ url()->previous() }}" class="px-6 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 rounded transition shadow-sm">
@@ -125,3 +154,62 @@
     </div>
 </div>
 @endsection
+@push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+@endpush
+
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const initialLat = {{ $modul->latitude ?? 3.13220 }};
+        const initialLng = {{ $modul->longitude ?? 98.46650 }};
+        const hasLocation = {{ $modul->latitude ? 'true' : 'false' }};
+        
+        const map = L.map('locationMap').setView([initialLat, initialLng], hasLocation ? 14 : 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        
+        let marker = null;
+        
+        if(hasLocation) {
+            setMarker(initialLat, initialLng);
+        }
+        
+        map.on('click', function(e) {
+            setMarker(e.latlng.lat, e.latlng.lng);
+        });
+        
+        function setMarker(lat, lng) {
+            if(marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+            document.getElementById('latitude').value = lat.toFixed(7);
+            document.getElementById('longitude').value = lng.toFixed(7);
+            
+            marker.on('dragend', function(event) {
+                const position = marker.getLatLng();
+                document.getElementById('latitude').value = position.lat.toFixed(7);
+                document.getElementById('longitude').value = position.lng.toFixed(7);
+            });
+        }
+        
+        document.getElementById('btn-search-map').addEventListener('click', function() {
+            const query = document.getElementById('map-search').value;
+            if(!query) return;
+            
+            // Search focused on Kabupaten Karo
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query + ', Kabupaten Karo, Sumatera Utara'))
+                .then(res => res.json())
+                .then(data => {
+                    if(data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lng = parseFloat(data[0].lon);
+                        map.setView([lat, lng], 14);
+                        setMarker(lat, lng);
+                    } else {
+                        alert('Lokasi tidak ditemukan di Kabupaten Karo.');
+                    }
+                });
+        });
+    });
+</script>
+@endpush
