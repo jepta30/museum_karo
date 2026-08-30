@@ -150,16 +150,23 @@
             @if($modul->galeri && $modul->galeri->count() > 0)
                 <div class="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
                     @foreach($modul->galeri as $item)
-                        <div class="break-inside-avoid relative rounded-xl overflow-hidden shadow-sm group">
+                        <div class="break-inside-avoid relative rounded-xl overflow-hidden shadow-sm group bg-gray-50 border border-gray-100 pb-2">
                             @if($item->tipe === 'video')
-                                <video src="{{ Storage::url($item->path_file) }}" controls class="w-full bg-black"></video>
-                                <div class="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded">VIDEO</div>
+                                <div class="relative">
+                                    <video src="{{ Storage::url($item->path_file) }}" controls class="w-full bg-black rounded-t-xl"></video>
+                                    <div class="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded">VIDEO</div>
+                                </div>
                             @else
-                                <div class="cursor-pointer overflow-hidden" onclick="openLightbox('{{ Storage::url($item->path_file) }}')">
+                                <div class="cursor-pointer overflow-hidden rounded-t-xl relative" onclick="openLightbox('{{ Storage::url($item->path_file) }}', '{{ addslashes($item->keterangan) }}')">
                                     <img src="{{ Storage::url($item->path_file) }}" alt="Galeri Koleksi" class="w-full object-cover group-hover:scale-105 transition-transform duration-500">
                                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                                         <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-md" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
                                     </div>
+                                </div>
+                            @endif
+                            @if($item->keterangan)
+                                <div class="px-3 py-2 text-sm text-gray-700 italic border-t border-gray-100 bg-white">
+                                    {{ $item->keterangan }}
                                 </div>
                             @endif
                         </div>
@@ -268,13 +275,14 @@
 </div>
 
 <!-- Lightbox Modal -->
-<div id="lightbox" class="fixed inset-0 z-[100] bg-black/90 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
     <button class="absolute top-6 right-6 text-white hover:text-gray-300 z-10" onclick="closeLightbox()">
         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
     </button>
-    <div class="relative w-full h-full p-4 md:p-12 flex items-center justify-center pointer-events-none">
+    <div class="relative w-full h-[85%] p-4 md:p-8 flex items-center justify-center pointer-events-none">
         <img id="lightbox-img" src="" class="max-w-full max-h-full object-contain shadow-2xl rounded pointer-events-auto transform scale-95 transition-transform duration-300" alt="Zoomed Gallery Image" onclick="event.stopPropagation()">
     </div>
+    <div id="lightbox-caption" class="absolute bottom-8 left-0 right-0 text-center text-white text-sm md:text-base font-medium px-4 opacity-0 transition-opacity duration-300"></div>
 </div>
 
 @endsection
@@ -301,11 +309,14 @@
         activeBtn.classList.add('text-gray-900', 'border-[#8b1c1c]');
     }
 
-    function openLightbox(src) {
+    function openLightbox(src, caption = '') {
         const lightbox = document.getElementById('lightbox');
         const img = document.getElementById('lightbox-img');
+        const cap = document.getElementById('lightbox-caption');
         
         img.src = src;
+        cap.innerText = caption;
+        
         lightbox.classList.remove('hidden');
         
         // Trigger reflow
@@ -314,6 +325,8 @@
         lightbox.classList.remove('opacity-0');
         img.classList.remove('scale-95');
         img.classList.add('scale-100');
+        cap.classList.remove('opacity-0');
+        
         document.body.style.overflow = 'hidden';
     }
     

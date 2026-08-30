@@ -243,25 +243,37 @@
                 const type = file.type;
                 
                 const wrapper = document.createElement('div');
-                wrapper.className = 'relative aspect-square bg-gray-100 rounded-md overflow-hidden border border-gray-200';
+                wrapper.className = 'relative bg-gray-50 rounded-md border border-gray-200 p-2 flex flex-col gap-2';
+                
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'relative aspect-square rounded overflow-hidden';
                 
                 if (type.startsWith('image/')) {
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
                     img.className = 'w-full h-full object-cover';
-                    wrapper.appendChild(img);
+                    imgContainer.appendChild(img);
                 } else if (type.startsWith('video/')) {
                     const video = document.createElement('video');
                     video.src = URL.createObjectURL(file);
                     video.className = 'w-full h-full object-cover';
                     video.muted = true;
-                    wrapper.appendChild(video);
+                    imgContainer.appendChild(video);
                     
                     const badge = document.createElement('div');
-                    badge.className = 'absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded';
+                    badge.className = 'absolute bottom-1 left-1 bg-black/60 text-white text-[10px] font-bold px-1.5 py-0.5 rounded';
                     badge.innerText = 'VIDEO';
-                    wrapper.appendChild(badge);
+                    imgContainer.appendChild(badge);
                 }
+                
+                wrapper.appendChild(imgContainer);
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'keterangan_baru[]';
+                input.placeholder = 'Keterangan...';
+                input.className = 'w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:border-[#8b1c1c] focus:ring-transparent bg-white';
+                wrapper.appendChild(input);
                 
                 container.appendChild(wrapper);
             }

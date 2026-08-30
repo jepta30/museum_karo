@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Sistem Informasi Warisan Budaya Karo')</title>
+    <title>@yield('title', 'SIMPUKA - Sistem Informasi Museum Pusaka Karo')</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -38,11 +38,11 @@
 
     <!-- Navbar -->
     <nav class="bg-white px-6 py-4 flex items-center justify-between shadow-sm relative z-50">
-        <div class="flex items-center gap-3">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10">
+        <div class="flex items-center gap-4">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Museum Pusaka Karo" class="h-12 w-auto drop-shadow-sm">
             <div class="hidden sm:block">
-                <h1 class="text-[#8b1c1c] font-serif font-bold text-lg leading-tight">Sistem Informasi Warisan<br>Budaya Karo</h1>
-                <p class="text-xs text-gray-500 uppercase tracking-widest mt-0.5">Museum Pusaka Karo</p>
+                <h1 class="text-[#8b1c1c] font-serif font-bold text-xl leading-tight tracking-wide">SIMPUKA</h1>
+                <p class="text-[11px] text-gray-500 uppercase tracking-wider mt-0.5 font-medium">Sistem Informasi Museum Pusaka Karo</p>
             </div>
         </div>
         

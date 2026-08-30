@@ -940,8 +940,8 @@ $todayKey = $dayMap[date('l')] ?? 'senin';
         <p>
             Museum Pusaka Karo hadir sebagai ruang pelestarian warisan budaya masyarakat Karo,
             mulai dari arsitektur rumah adat, kain tradisional, alat musik, hingga tradisi dan
-            kearifan lokal yang diwariskan turun-temurun. Melalui Sistem Informasi Warisan Budaya
-            Karo, seluruh koleksi dan dokumentasi budaya ini disajikan secara digital agar dapat
+            kearifan lokal yang diwariskan turun-temurun. Melalui SIMPUKA (Sistem Informasi Museum Pusaka Karo), 
+            seluruh koleksi dan dokumentasi budaya ini disajikan secara digital agar dapat
             diakses, dipelajari, dan dilestarikan oleh masyarakat luas maupun generasi muda Karo.
         </p>
         <p>

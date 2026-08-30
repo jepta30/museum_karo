@@ -34,27 +34,17 @@
     <aside class="w-64 border-r border-gray-200 flex flex-col justify-between shrink-0 {{ (Auth::check() && in_array(Auth::user()->peran, ['kurator', 'pimpinan'])) ? 'bg-[#faf5f0]' : 'bg-white' }}">
         <div>
             <!-- Logo & Title -->
-            <div class="p-6 flex items-center gap-3">
-                <div class="w-10 h-10 bg-black text-white rounded-md flex items-center justify-center font-bold text-xl">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
-                </div>
+            <div class="p-6 flex items-center gap-3 border-b border-gray-100 mb-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 w-auto">
                 <div>
-                    <h1 class="font-serif font-bold text-lg leading-tight text-black">Museum<br>Karo</h1>
-                    <p class="text-[10px] text-gray-500 font-medium tracking-wide">Sistem Buku Besar Digital</p>
+                    <h1 class="font-serif font-bold text-xl leading-tight text-[#8b1c1c] tracking-wide">SIMPUKA</h1>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest mt-0.5 font-medium leading-tight">Sistem Informasi Museum Pusaka Karo</p>
                 </div>
             </div>
             
             <!-- Menu Utama -->
             <nav class="px-4 mt-2">
                 @if(Auth::user()->peran === 'admin')
-                    <div class="mb-4">
-                        <div class="flex items-center gap-3 px-4 py-2">
-                            <div>
-                                <h1 class="font-serif font-bold text-[#5c1c16] text-xl leading-tight">Karo Museum</h1>
-                                <p class="text-[10px] text-gray-500">Terminal Admin</p>
-                            </div>
-                        </div>
-                    </div>
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 mt-4 text-sm font-semibold rounded-md {{ request()->routeIs('admin.dashboard') ? 'bg-[#f7f2ed] text-black border-r-4 border-[#5c1c16]' : 'text-gray-600 hover:bg-gray-50' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Dasbor
@@ -71,7 +61,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         Peran & Izin
                     </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 mt-1 text-sm font-medium text-gray-600 rounded-md hover:bg-gray-50">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 mt-1 text-sm font-medium rounded-md {{ request()->routeIs('profile.edit') ? 'bg-[#f7f2ed] text-black border-r-4 border-[#5c1c16]' : 'text-gray-600 hover:bg-gray-50' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         Pengaturan Sistem
                     </a>
@@ -85,7 +75,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Otorisasi Edukasi
                     </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-gray-600 font-medium rounded-md text-sm hover:bg-gray-50">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 mt-1 text-sm font-medium rounded-md {{ request()->routeIs('profile.edit') ? 'bg-[#f7f2ed] text-black border-r-4 border-[#5c1c16]' : 'text-gray-600 hover:bg-gray-50' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                         Settings
                     </a>
@@ -123,6 +113,10 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         Kesan & Pesan
                     </a>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('profile.edit') ? 'bg-gray-50 text-black font-semibold border-l-4 border-black' : 'text-gray-600 font-medium hover:bg-gray-50' }} rounded-md text-sm mt-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Pengaturan
+                    </a>
                 @elseif(Auth::check() && Auth::user()->peran === 'edukator')
                     <nav class="space-y-1">
                         <a href="{{ route('educator.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('educator.dashboard') ? 'bg-[#fbf7f5] text-museum-red font-semibold border-l-4 border-museum-red' : 'text-gray-500 hover:text-museum-red hover:bg-[#fbf7f5]' }} rounded-md transition group">
@@ -141,8 +135,8 @@
                             <svg class="w-5 h-5 text-gray-400 group-hover:text-museum-red transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
                             Arsip
                         </a>
-                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-gray-500 hover:text-museum-red hover:bg-[#fbf7f5] rounded-md transition font-medium group">
-                            <svg class="w-5 h-5 text-gray-400 group-hover:text-museum-red transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('profile.edit') ? 'bg-[#fbf7f5] text-museum-red font-semibold border-l-4 border-museum-red' : 'text-gray-500 hover:text-museum-red hover:bg-[#fbf7f5]' }} rounded-md transition font-medium group">
+                            <svg class="w-5 h-5 {{ request()->routeIs('profile.edit') ? 'text-museum-red' : 'text-gray-400 group-hover:text-museum-red transition' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             Pengaturan
                         </a>
                     </nav>
@@ -157,10 +151,18 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                         Pendaftaran Baru
                     </a>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('profile.edit') ? 'bg-gray-50 text-black font-semibold border-l-4 border-black' : 'text-gray-600 font-medium hover:bg-gray-50' }} rounded-md text-sm mt-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Pengaturan
+                    </a>
                 @endif
             </nav>
         </div>
 
+        <!-- Corak Karo Bottom Ornament -->
+        <div class="mt-auto pb-4 w-full opacity-90">
+            <div class="h-[30px] w-full" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'30\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'40\' height=\'30\' fill=\'%238b1c1c\' /%3E%3Crect width=\'40\' height=\'3\' y=\'3\' fill=\'%231a1a1a\' /%3E%3Crect width=\'40\' height=\'3\' y=\'24\' fill=\'%231a1a1a\' /%3E%3Crect width=\'40\' height=\'1\' y=\'8\' fill=\'%23d4af37\' /%3E%3Crect width=\'40\' height=\'1\' y=\'21\' fill=\'%23d4af37\' /%3E%3Cpolygon points=\'20,10 25,15 20,20 15,15\' fill=\'%23d4af37\' /%3E%3Cpolygon points=\'0,10 5,15 0,20 -5,15\' fill=\'%23d4af37\' /%3E%3Cpolygon points=\'40,10 45,15 40,20 35,15\' fill=\'%23d4af37\' /%3E%3C/svg%3E'); background-repeat: repeat-x; background-size: 40px 30px;"></div>
+        </div>
         <!-- End of Sidebar Content -->
     </aside>
 
@@ -177,7 +179,7 @@
                 <!-- Search Box -->
                 <div class="relative">
                     <svg class="w-4 h-4 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="Cari arsip..." class="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red w-64 transition">
+                    <input type="text" placeholder="Cari Arsip..." class="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red w-64 transition">
                 </div>
                 <!-- Ikon Profil dll -->
                 <div class="flex items-center gap-4 text-gray-500">
@@ -213,3 +215,5 @@
     @stack('scripts')
 </body>
 </html>
+
+

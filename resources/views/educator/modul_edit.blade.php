@@ -112,17 +112,19 @@
                         @if($modul->galeri && $modul->galeri->count() > 0)
                         <div class="mb-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                             @foreach($modul->galeri as $item)
-                                <div class="relative aspect-square bg-gray-100 rounded-md overflow-hidden border border-gray-200 group">
-                                    @if($item->tipe === 'video')
-                                        <video src="{{ Storage::url($item->path_file) }}" class="w-full h-full object-cover" muted></video>
-                                        <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded">VIDEO</div>
-                                    @else
-                                        <img src="{{ Storage::url($item->path_file) }}" class="w-full h-full object-cover">
-                                    @endif
-                                    
-                                    <button type="button" onclick="deleteGaleri({{ $item->id }})" class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition shadow" title="Hapus">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                    </button>
+                                <div class="relative bg-gray-50 rounded-md border border-gray-200 p-2 flex flex-col gap-2 group">
+                                    <div class="relative aspect-square rounded overflow-hidden">
+                                        @if($item->tipe === 'video')
+                                            <video src="{{ Storage::url($item->path_file) }}" class="w-full h-full object-cover" muted></video>
+                                            <div class="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">VIDEO</div>
+                                        @else
+                                            <img src="{{ Storage::url($item->path_file) }}" class="w-full h-full object-cover">
+                                        @endif
+                                        <button type="button" onclick="deleteGaleri({{ $item->id }})" class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition shadow" title="Hapus">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                    <input type="text" name="keterangan_existing[{{ $item->id }}]" value="{{ $item->keterangan }}" placeholder="Keterangan..." class="w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:border-[#8b1c1c] focus:ring-transparent bg-white">
                                 </div>
                             @endforeach
                         </div>
@@ -275,25 +277,37 @@
                 const type = file.type;
                 
                 const wrapper = document.createElement('div');
-                wrapper.className = 'relative aspect-square bg-gray-100 rounded-md overflow-hidden border border-gray-200';
+                wrapper.className = 'relative bg-gray-50 rounded-md border border-gray-200 p-2 flex flex-col gap-2';
+                
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'relative aspect-square rounded overflow-hidden';
                 
                 if (type.startsWith('image/')) {
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
                     img.className = 'w-full h-full object-cover';
-                    wrapper.appendChild(img);
+                    imgContainer.appendChild(img);
                 } else if (type.startsWith('video/')) {
                     const video = document.createElement('video');
                     video.src = URL.createObjectURL(file);
                     video.className = 'w-full h-full object-cover';
                     video.muted = true;
-                    wrapper.appendChild(video);
+                    imgContainer.appendChild(video);
                     
                     const badge = document.createElement('div');
-                    badge.className = 'absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded';
+                    badge.className = 'absolute bottom-1 left-1 bg-black/60 text-white text-[10px] font-bold px-1.5 py-0.5 rounded';
                     badge.innerText = 'VIDEO';
-                    wrapper.appendChild(badge);
+                    imgContainer.appendChild(badge);
                 }
+                
+                wrapper.appendChild(imgContainer);
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'keterangan_baru[]';
+                input.placeholder = 'Keterangan...';
+                input.className = 'w-full px-2 py-1.5 text-xs border border-gray-300 rounded focus:border-[#8b1c1c] focus:ring-transparent bg-white';
+                wrapper.appendChild(input);
                 
                 container.appendChild(wrapper);
             }

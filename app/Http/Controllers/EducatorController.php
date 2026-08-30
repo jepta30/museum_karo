@@ -132,14 +132,18 @@ class EducatorController extends Controller
         $modul->save();
 
         if ($request->hasFile('galeri_files')) {
-            foreach ($request->file('galeri_files') as $file) {
+            $keteranganBaru = $request->input('keterangan_baru', []);
+            $files = $request->file('galeri_files');
+            foreach ($files as $index => $file) {
                 $path = $file->store('galeri_modul', 'public');
                 $ext = strtolower($file->getClientOriginalExtension());
                 $tipe = in_array($ext, ['mp4', 'mov', 'avi']) ? 'video' : 'foto';
+                $ket = $keteranganBaru[$index] ?? null;
                 \App\Models\GaleriModul::create([
                     'modul_edukasi_id' => $modul->id,
                     'tipe' => $tipe,
-                    'path_file' => $path
+                    'path_file' => $path,
+                    'keterangan' => $ket
                 ]);
             }
         }
@@ -196,15 +200,27 @@ class EducatorController extends Controller
         
         $modul->save();
 
+        if ($request->has('keterangan_existing')) {
+            foreach ($request->keterangan_existing as $galeri_id => $keterangan) {
+                \App\Models\GaleriModul::where('id', $galeri_id)
+                    ->where('modul_edukasi_id', $modul->id)
+                    ->update(['keterangan' => $keterangan]);
+            }
+        }
+
         if ($request->hasFile('galeri_files')) {
-            foreach ($request->file('galeri_files') as $file) {
+            $keteranganBaru = $request->input('keterangan_baru', []);
+            $files = $request->file('galeri_files');
+            foreach ($files as $index => $file) {
                 $path = $file->store('galeri_modul', 'public');
                 $ext = strtolower($file->getClientOriginalExtension());
                 $tipe = in_array($ext, ['mp4', 'mov', 'avi']) ? 'video' : 'foto';
+                $ket = $keteranganBaru[$index] ?? null;
                 \App\Models\GaleriModul::create([
                     'modul_edukasi_id' => $modul->id,
                     'tipe' => $tipe,
-                    'path_file' => $path
+                    'path_file' => $path,
+                    'keterangan' => $ket
                 ]);
             }
         }
