@@ -107,7 +107,8 @@ class EducatorController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
-            'koleksi_id' => 'nullable|exists:koleksi,id'
+            'koleksi_id' => 'nullable|exists:koleksi,id',
+            'galeri_files.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200'
         ]);
 
         if ($request->koleksi_id) {
@@ -129,6 +130,19 @@ class EducatorController extends Controller
         $modul->penulis_id = \Illuminate\Support\Facades\Auth::id();
         $modul->status = 'draf';
         $modul->save();
+
+        if ($request->hasFile('galeri_files')) {
+            foreach ($request->file('galeri_files') as $file) {
+                $path = $file->store('galeri_modul', 'public');
+                $ext = strtolower($file->getClientOriginalExtension());
+                $tipe = in_array($ext, ['mp4', 'mov', 'avi']) ? 'video' : 'foto';
+                \App\Models\GaleriModul::create([
+                    'modul_edukasi_id' => $modul->id,
+                    'tipe' => $tipe,
+                    'path_file' => $path
+                ]);
+            }
+        }
 
         \App\Models\LogAktivitas::create([
             'user_id' => auth()->id(),
@@ -160,6 +174,7 @@ class EducatorController extends Controller
             'judul' => 'required|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
+            'galeri_files.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200'
         ]);
 
         $modul->judul = $request->judul;
@@ -181,7 +196,31 @@ class EducatorController extends Controller
         
         $modul->save();
 
+        if ($request->hasFile('galeri_files')) {
+            foreach ($request->file('galeri_files') as $file) {
+                $path = $file->store('galeri_modul', 'public');
+                $ext = strtolower($file->getClientOriginalExtension());
+                $tipe = in_array($ext, ['mp4', 'mov', 'avi']) ? 'video' : 'foto';
+                \App\Models\GaleriModul::create([
+                    'modul_edukasi_id' => $modul->id,
+                    'tipe' => $tipe,
+                    'path_file' => $path
+                ]);
+            }
+        }
+
         return redirect()->route('educator.dashboard')->with('success', $msg);
+    }
+
+    public function deleteGaleri($id)
+    {
+        $galeri = \App\Models\GaleriModul::findOrFail($id);
+        if ($galeri->path_file) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($galeri->path_file);
+        }
+        $galeri->delete();
+        
+        return back()->with('success', 'File galeri berhasil dihapus.');
     }
 
     public function showModul($id)

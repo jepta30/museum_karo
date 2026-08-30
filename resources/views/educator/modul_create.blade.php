@@ -74,7 +74,7 @@
                     <p class="text-sm text-gray-600 mt-1">Buat narasi sejarah dan edukasi yang menarik berdasarkan referensi kurator.</p>
                 </div>
 
-                <form action="{{ route('educator.modul.store') }}" method="POST" class="p-8 space-y-8">
+                <form action="{{ route('educator.modul.store') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
                     @csrf
                     @if($koleksi)
                         <input type="hidden" name="koleksi_id" value="{{ $koleksi->id }}">
@@ -101,12 +101,45 @@
                         <textarea name="sejarah_makna" rows="8" placeholder="Tuliskan sejarah, asal usul, atau makna filosofis dari koleksi budaya ini..." 
                                   class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm leading-relaxed bg-white resize-y"></textarea>
                     </div>
+                    
+                    <!-- Unggah Media Galeri -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Media Galeri (Foto & Video)</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-md p-6 text-center hover:bg-gray-50 transition cursor-pointer" onclick="document.getElementById('galeri-upload').click()">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <p class="mt-2 text-sm text-gray-600 font-medium">Klik untuk memilih file foto/video</p>
+                            <p class="mt-1 text-xs text-gray-500">Mendukung JPG, PNG, MP4 (Maks 50MB per file)</p>
+                            <input type="file" id="galeri-upload" name="galeri_files[]" multiple accept="image/*,video/mp4,video/quicktime" class="hidden">
+                        </div>
+                        <div id="file-preview-container" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 empty:hidden"></div>
+                    </div>
 
                     <!-- Peta Titik Asal -->
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Titik Asal Koleksi (Peta)</label>
                         <p class="text-xs text-gray-500 mb-3">Geser pin (marker) pada peta atau cari lokasi (fokus pencarian di wilayah Kabupaten Karo) untuk menentukan letak titik asal koleksi.</p>
                         
+                        @if($koleksi)
+                        @php
+                            $asalDef = 'Tidak Diketahui';
+                            if ($koleksi->tempat_lahir_penyerah) {
+                                $asalDef = $koleksi->tempat_lahir_penyerah;
+                            } elseif ($koleksi->alamat_penyerah) {
+                                $parts = explode(',', $koleksi->alamat_penyerah);
+                                $asalDef = trim(end($parts));
+                            }
+                        @endphp
+                        <div class="mb-3 p-3 bg-[#faf7f2] border border-[#e2d5c5] rounded-md flex items-start gap-2">
+                            <svg class="w-5 h-5 text-[#8b1c1c] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div>
+                                <p class="text-[11px] text-[#8b1c1c] font-bold uppercase tracking-wider mb-0.5">Petunjuk Pencarian (Dari Register):</p>
+                                <p class="text-xs text-gray-700 font-medium">Asal koleksi tercatat: <span class="font-bold text-gray-900">{{ $asalDef }}</span></p>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="flex flex-col gap-3 mb-3 relative">
                             <div class="relative w-full">
                                 <input type="text" id="map-search" placeholder="Cari desa / kecamatan di Kab. Karo..." class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md text-sm focus:border-museum-red">
@@ -197,6 +230,41 @@
                         alert('Lokasi tidak ditemukan di Kabupaten Karo.');
                     }
                 });
+        });
+
+        // Gallery File Preview
+        document.getElementById('galeri-upload').addEventListener('change', function(event) {
+            const container = document.getElementById('file-preview-container');
+            container.innerHTML = '';
+            const files = event.target.files;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const type = file.type;
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative aspect-square bg-gray-100 rounded-md overflow-hidden border border-gray-200';
+                
+                if (type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'w-full h-full object-cover';
+                    wrapper.appendChild(img);
+                } else if (type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.src = URL.createObjectURL(file);
+                    video.className = 'w-full h-full object-cover';
+                    video.muted = true;
+                    wrapper.appendChild(video);
+                    
+                    const badge = document.createElement('div');
+                    badge.className = 'absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded';
+                    badge.innerText = 'VIDEO';
+                    wrapper.appendChild(badge);
+                }
+                
+                container.appendChild(wrapper);
+            }
         });
     });
 </script>

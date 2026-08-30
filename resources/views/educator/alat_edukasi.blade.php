@@ -53,10 +53,10 @@
 
                     <!-- Badge -->
                     <div class="absolute top-3 right-3">
-                        @if(in_array($modul->status, ['disetujui', 'dipublikasi']))
-                            <span class="bg-white/90 backdrop-blur-sm text-gray-800 text-[10px] font-bold px-2.5 py-1 rounded shadow-sm uppercase tracking-wider flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#8b1c1c]"></span>
-                                TERPUBLIKASI
+                        @if($modul->status === 'diterbitkan')
+                            <span class="bg-white/90 backdrop-blur-sm text-[#8b1c1c] text-[10px] font-bold px-2.5 py-1 rounded shadow-sm uppercase tracking-wider flex items-center gap-1.5 border border-[#8b1c1c]/20">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#8b1c1c] animate-pulse"></span>
+                                TERPUBLIS
                             </span>
                         @elseif($modul->status === 'draf')
                             <span class="bg-white/90 backdrop-blur-sm text-gray-600 text-[10px] font-bold px-2.5 py-1 rounded shadow-sm uppercase tracking-wider flex items-center gap-1.5">

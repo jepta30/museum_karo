@@ -136,7 +136,30 @@ Route::get('/koleksi/{id}', function ($id) {
         'koleksi_id' => $koleksi->id,
     ]);
 
-    return view('koleksi_detail', compact('modul', 'koleksi', 'deskripsi_umum', 'sejarah_makna', 'komentars'));
+    // Get related moduls (same category, or just latest published)
+    $relatedModuls = \App\Models\ModulEdukasi::with('koleksi.kategori')
+        ->where('status', 'diterbitkan')
+        ->where('id', '!=', $id)
+        ->whereHas('koleksi', function ($query) use ($koleksi) {
+            $query->where('kategori_id', $koleksi->kategori_id);
+        })
+        ->inRandomOrder()
+        ->take(4)
+        ->get();
+
+    // If not enough related in same category, just append other recent ones
+    if ($relatedModuls->count() < 4) {
+        $moreModuls = \App\Models\ModulEdukasi::with('koleksi.kategori')
+            ->where('status', 'diterbitkan')
+            ->where('id', '!=', $id)
+            ->whereNotIn('id', $relatedModuls->pluck('id')->toArray())
+            ->latest()
+            ->take(4 - $relatedModuls->count())
+            ->get();
+        $relatedModuls = $relatedModuls->merge($moreModuls);
+    }
+
+    return view('koleksi_detail', compact('modul', 'koleksi', 'deskripsi_umum', 'sejarah_makna', 'komentars', 'relatedModuls'));
 })->name('koleksi.detail');
 
 Route::post('/koleksi/{id}/komentar', function (Illuminate\Http\Request $request, $id) {
@@ -224,4 +247,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/educator/modul/{id}/edit', [App\Http\Controllers\EducatorController::class, 'editModul'])->name('educator.modul.edit');
     Route::post('/educator/modul/{id}/update', [App\Http\Controllers\EducatorController::class, 'updateModul'])->name('educator.modul.update');
     Route::post('/educator/modul/{id}/unpublish', [App\Http\Controllers\EducatorController::class, 'unpublishModul'])->name('educator.modul.unpublish');
+    Route::delete('/educator/galeri/{id}', [App\Http\Controllers\EducatorController::class, 'deleteGaleri'])->name('educator.galeri.delete');
 });

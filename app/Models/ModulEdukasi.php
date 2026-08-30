@@ -20,4 +20,9 @@ class ModulEdukasi extends Model
     {
         return $this->belongsTo(Koleksi::class, 'koleksi_id');
     }
+
+    public function galeri()
+    {
+        return $this->hasMany(GaleriModul::class, 'modul_edukasi_id');
+    }
 }
