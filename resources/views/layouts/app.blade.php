@@ -81,22 +81,22 @@
                     </a>
                 @elseif(Auth::check() && Auth::user()->peran === 'kurator')
                     <a href="{{ route('curator.dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.dashboard') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
-                        <!-- Ikon Dasbor -->
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Dasbor Utama
                     </a>
-                    <a href="{{ route('curator.verifikasi') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.verifikasi') || request()->routeIs('curator.review') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
-                        <!-- Ikon Ceklis -->
+                    <a href="{{ route('curator.kurasi') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.kurasi') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Tinjau & Verifikasi
                     </a>
-                    <a href="{{ route('curator.pameran') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.pameran') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
-                        <!-- Ikon Pameran -->
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
-                        Kelola Pameran
+                    <a href="{{ route('curator.repository') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.repository') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                        Repositori Dokumen
+                    </a>
+                    <a href="{{ route('curator.komentar') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.komentar') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                        Komentar Pengunjung
                     </a>
                     <a href="{{ route('curator.katalog') }}" class="flex items-center gap-3 px-4 py-2.5 {{ request()->routeIs('curator.katalog') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 font-medium hover:bg-white/10 hover:text-white' }} rounded-md text-sm mt-1">
-                        <!-- Ikon Katalog -->
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                         Katalog Publikasi
                     </a>
