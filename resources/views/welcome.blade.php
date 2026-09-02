@@ -31,6 +31,15 @@
             }
         }
     </script>
+    <style>
+        @keyframes slide {
+            0%, 45% { transform: translateX(0); }
+            55%, 100% { transform: translateX(-50%); }
+        }
+        .animate-slide {
+            animation: slide 16s infinite alternate ease-in-out;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased font-sans">
 
@@ -53,6 +62,7 @@
                 <a href="{{ route('saran') }}" class="hover:text-[#8b1c1c] transition">Saran & Pesan</a>
             </div>
             
+            <div class="pl-6 border-l border-gray-200">
             @if (Route::has('login'))
                 @auth
                     <a href="{{ url('/dashboard') }}" class="flex items-center gap-2 hover:text-[#8b1c1c] text-[#8b1c1c] transition ml-2 lg:ml-4 font-bold border border-[#8b1c1c] px-4 py-2 rounded">
@@ -72,8 +82,11 @@
     <!-- Hero Section -->
     <div class="relative w-full h-[600px] lg:h-[700px] bg-gray-900 overflow-hidden flex items-center">
         <!-- Background Image -->
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/tampakdepan.png') }}" class="w-full h-full object-cover opacity-60 mix-blend-overlay" alt="Museum Pusaka Karo">
+        <div class="absolute inset-0 z-0 overflow-hidden">
+            <div class="w-[200%] h-full flex animate-slide">
+                <img src="{{ asset('images/museum-tampak-luar.png') }}" class="w-1/2 h-full object-cover opacity-60 shrink-0" alt="Museum Pusaka Karo 1">
+                <img src="{{ asset('images/tampakdepan.png') }}" class="w-1/2 h-full object-cover opacity-60 shrink-0" alt="Museum Pusaka Karo 2">
+            </div>
             <!-- Linear Gradient for text readability -->
             <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
         </div>

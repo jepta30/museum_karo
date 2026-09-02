@@ -14,9 +14,9 @@
     <div class="bg-[#fdfbf9] border border-[#f2ebe3] rounded-lg p-4 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
             <a href="?kategori=semua" class="px-4 py-1.5 rounded-full border {{ request('kategori') == 'semua' || !request('kategori') ? 'border-[#8b1c1c] bg-[#fdf9f4] text-[#8b1c1c] font-semibold' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50' }} text-sm transition whitespace-nowrap">Semua</a>
-            <a href="?kategori=sejarah" class="px-4 py-1.5 rounded-full border {{ request('kategori') == 'sejarah' ? 'border-[#8b1c1c] bg-[#fdf9f4] text-[#8b1c1c] font-semibold' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50' }} text-sm transition whitespace-nowrap">Sejarah</a>
-            <a href="?kategori=seni" class="px-4 py-1.5 rounded-full border {{ request('kategori') == 'seni' ? 'border-[#8b1c1c] bg-[#fdf9f4] text-[#8b1c1c] font-semibold' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50' }} text-sm transition whitespace-nowrap">Seni</a>
-            <a href="?kategori=arsitektur" class="px-4 py-1.5 rounded-full border {{ request('kategori') == 'arsitektur' ? 'border-[#8b1c1c] bg-[#fdf9f4] text-[#8b1c1c] font-semibold' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50' }} text-sm transition whitespace-nowrap">Arsitektur</a>
+            @foreach($kategoris as $kat)
+                <a href="?kategori={{ urlencode($kat->nama) }}" class="px-4 py-1.5 rounded-full border {{ request('kategori') == $kat->nama ? 'border-[#8b1c1c] bg-[#fdf9f4] text-[#8b1c1c] font-semibold' : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50' }} text-sm transition whitespace-nowrap">{{ $kat->nama }}</a>
+            @endforeach
         </div>
         <div>
             <form action="{{ route('educator.alat_edukasi') }}" method="GET" class="flex items-center">
@@ -120,47 +120,5 @@
         </div>
     @endif
 
-    <!-- Pustaka Sumber Daya -->
-    <div class="mt-8">
-        <h2 class="text-2xl font-serif font-bold text-[#4a1b1b] mb-6 border-b border-gray-200 pb-3">Pustaka Sumber Daya</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Arsip Citra -->
-            <div class="bg-[#fdf9f4] border border-[#f0e3d3] rounded-lg p-6 hover:shadow-sm transition group cursor-pointer">
-                <div class="w-10 h-10 bg-white rounded border border-[#f0e3d3] flex items-center justify-center text-[#8b1c1c] mb-4 group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
-                </div>
-                <h3 class="font-bold text-gray-900 text-sm mb-2">Arsip Citra Resolusi Tinggi</h3>
-                <p class="text-xs text-gray-600 mb-6 leading-relaxed">Akses foto Koleksi Budaya terverifikasi untuk materi pembelajaran Anda.</p>
-                <a href="{{ route('educator.koleksi') }}" class="text-xs font-bold text-[#8b1c1c] flex items-center gap-1 group-hover:gap-2 transition-all">
-                    Jelajahi Citra <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </a>
-            </div>
-
-            <!-- Dokumen Standar -->
-            <div class="bg-[#fdf9f4] border border-[#f0e3d3] rounded-lg p-6 hover:shadow-sm transition group cursor-pointer">
-                <div class="w-10 h-10 bg-white rounded border border-[#f0e3d3] flex items-center justify-center text-gray-600 mb-4 group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                </div>
-                <h3 class="font-bold text-gray-900 text-sm mb-2">Dokumen Standar</h3>
-                <p class="text-xs text-gray-600 mb-6 leading-relaxed">Template PDF dan panduan penyusunan narasi kurikulum.</p>
-                <a href="#" class="text-xs font-bold text-gray-700 flex items-center gap-1 group-hover:text-gray-900 transition-colors">
-                    Unduh <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                </a>
-            </div>
-
-            <!-- Rencana Pelajaran -->
-            <div class="bg-[#fdf9f4] border border-[#f0e3d3] rounded-lg p-6 hover:shadow-sm transition group cursor-pointer">
-                <div class="w-10 h-10 bg-white rounded border border-[#f0e3d3] flex items-center justify-center text-gray-600 mb-4 group-hover:scale-110 transition-transform">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                </div>
-                <h3 class="font-bold text-gray-900 text-sm mb-2">Rencana Pelajaran</h3>
-                <p class="text-xs text-gray-600 mb-6 leading-relaxed">Silabus terstruktur untuk memandu edukasi di berbagai tingkatan.</p>
-                <a href="#" class="text-xs font-bold text-gray-700 flex items-center gap-1 group-hover:gap-2 transition-all">
-                    Lihat Arsip <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </a>
-            </div>
-        </div>
-    </div>
 </div>
 @endsection

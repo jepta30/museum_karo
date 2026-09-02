@@ -87,7 +87,9 @@ class EducatorController extends Controller
         // Ambil data terbaru
         $moduls = $query->orderBy('updated_at', 'desc')->paginate(12);
 
-        return view('educator.alat_edukasi', compact('moduls'));
+        $kategoris = \App\Models\Kategori::orderBy('nama', 'asc')->get();
+
+        return view('educator.alat_edukasi', compact('moduls', 'kategoris'));
     }
 
     public function createModul(Request $request)

@@ -1,45 +1,16 @@
-@extends('layouts.app')
+﻿import re
 
-@section('title', 'Pengaturan Akun')
+with open('resources/views/profile.blade.php', 'r', encoding='utf-8') as f:
+    content = f.read()
 
-@section('content')
-<div class="max-w-4xl mx-auto">
-    <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900 font-serif">Pengaturan Akun</h1>
-        <p class="text-sm text-gray-500 mt-1">Perbarui informasi profil dan kata sandi Anda.</p>
-    </div>
+# Current Password
+old_current = """                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Saat Ini</label>
+                    <input type="password" name="current_password" placeholder="Biarkan kosong jika tidak ingin mengubah sandi" class="w-full md:w-1/2 px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm @error('current_password') border-red-500 @enderror">
+                    @error('current_password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>"""
 
-    @if (session('success'))
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded-md text-sm font-medium">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-        <form action="{{ route('profile.update') }}" method="POST" class="p-6 md:p-8">
-            @csrf
-            @method('PUT')
-            
-            <h2 class="text-lg font-bold text-gray-900 mb-6 border-b pb-2">Informasi Profil</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="mb-5">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm @error('name') border-red-500 @enderror">
-                    @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email (Username)</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm @error('email') border-red-500 @enderror">
-                    @error('email') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-                </div>
-            </div>
-
-            <h2 class="text-lg font-bold text-gray-900 mb-6 border-b pb-2">Ubah Kata Sandi <span class="text-sm font-normal text-gray-500 ml-2">(Opsional)</span></h2>
-            
-            <div class="space-y-5 mb-8">
-                <div>
+new_current = """                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Saat Ini</label>
                     <div class="relative w-full md:w-1/2">
                         <input type="password" id="current_password" name="current_password" placeholder="Biarkan kosong jika tidak ingin mengubah sandi" class="w-full pr-10 px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm @error('current_password') border-red-500 @enderror">
@@ -48,10 +19,17 @@
                         </button>
                     </div>
                     @error('current_password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
+                </div>"""
+content = content.replace(old_current, new_current)
+
+# New Password
+old_new = """                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Baru</label>
+                        <input type="password" name="new_password" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm @error('new_password') border-red-500 @enderror">
+                        @error('new_password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>"""
+
+new_new = """                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Baru</label>
                         <div class="relative w-full">
                             <input type="password" id="new_password" name="new_password" class="w-full pr-10 px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm @error('new_password') border-red-500 @enderror">
@@ -60,8 +38,16 @@
                             </button>
                         </div>
                         @error('new_password') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
+                    </div>"""
+content = content.replace(old_new, new_new)
+
+# New Password Confirmation
+old_confirm = """                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
+                        <input type="password" name="new_password_confirmation" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm">
+                    </div>"""
+
+new_confirm = """                    <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
                         <div class="relative w-full">
                             <input type="password" id="new_password_confirmation" name="new_password_confirmation" class="w-full pr-10 px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-md focus:ring-[#8b1c1c] focus:border-[#8b1c1c] text-sm">
@@ -69,19 +55,11 @@
                                 <svg id="icon_new_password_confirmation" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </div>"""
+content = content.replace(old_confirm, new_confirm)
 
-            <div class="flex justify-end pt-4 border-t border-gray-100">
-                <button type="submit" class="px-6 py-2.5 bg-[#8b1c1c] hover:bg-[#6a1515] text-white font-semibold rounded-md shadow-sm transition">
-                    Simpan Perubahan
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
+# Add Script at the end
+script = """
 @push('scripts')
 <script>
 function togglePassword(inputId) {
@@ -98,5 +76,9 @@ function togglePassword(inputId) {
 }
 </script>
 @endpush
+"""
 
-@endsection
+content = content.replace('@endsection', script + '\n@endsection')
+
+with open('resources/views/profile.blade.php', 'w', encoding='utf-8') as f:
+    f.write(content)
