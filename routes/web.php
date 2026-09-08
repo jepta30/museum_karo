@@ -207,6 +207,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/roles', [\App\Http\Controllers\AdminController::class, 'roles'])->name('admin.roles');
     Route::post('/admin/roles/store', [\App\Http\Controllers\AdminController::class, 'storeUser'])->name('admin.store_user');
 
+    // Rute Admin Koleksi
+    Route::get('/admin/koleksi', [\App\Http\Controllers\AdminController::class, 'koleksi'])->name('admin.koleksi');
+    Route::get('/admin/koleksi/create', [\App\Http\Controllers\AdminController::class, 'createKoleksi'])->name('admin.koleksi.create');
+    Route::post('/admin/koleksi', [\App\Http\Controllers\AdminController::class, 'storeKoleksi'])->name('admin.koleksi.store');
+
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');
     Route::get('/registrar/create', [RegistrarController::class, 'create'])->name('registrar.create');
