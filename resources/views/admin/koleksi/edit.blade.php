@@ -8,14 +8,14 @@
         <span class="mx-2">/</span>
         <a href="{{ route('admin.koleksi') }}" class="hover:text-museum-red">Koleksi Budaya</a>
         <span class="mx-2">/</span>
-        <span class="text-gray-800 font-medium">Tambah Baru</span>
+        <span class="text-gray-800 font-medium">Edit Koleksi</span>
     </div>
 
     <div class="bg-[#fdfbf9] border border-[#f2ebe3] rounded-xl shadow-sm overflow-hidden">
         <div class="bg-white border-b border-[#f2ebe3] p-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-serif font-bold text-[#6d3e3e]">Tambah Koleksi Budaya</h1>
-                <p class="text-sm text-gray-600 mt-1">Tambahkan koleksi budaya baru untuk dipublikasikan langsung ke pengunjung.</p>
+                <h1 class="text-2xl font-serif font-bold text-[#6d3e3e]">Edit Koleksi Budaya</h1>
+                <p class="text-sm text-gray-600 mt-1">Perbarui data koleksi budaya untuk dipublikasikan langsung ke pengunjung.</p>
             </div>
             <span class="px-3 py-1 bg-[#8b1c1c]/10 text-[#8b1c1c] rounded-full text-xs font-bold uppercase tracking-wider">Mode Admin (Bypass)</span>
         </div>
@@ -35,14 +35,15 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.koleksi.store') }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
+        <form action="{{ route('admin.koleksi.update', $modul->id) }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
             @csrf
+            @method('PUT')
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-5 bg-gray-50 border border-gray-200 rounded-lg">
                 <!-- Nomor Koleksi (Manual) -->
                 <div>
                     <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Nomor Koleksi Budaya</label>
-                    <input type="text" name="nomor_koleksi" required value="{{ old('nomor_koleksi') }}" placeholder="Contoh: INV/2026/001" 
+                    <input type="text" name="nomor_koleksi" required value="{{ old('nomor_koleksi', $modul->koleksi->nomor_inventaris_final ?? '') }}" placeholder="Contoh: INV/2026/001" 
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm font-medium bg-white">
                 </div>
                 <!-- Kategori -->
@@ -51,7 +52,7 @@
                     <select name="kategori_id" required class="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm bg-white">
                         <option value="">Pilih Kategori...</option>
                         @foreach($kategoris as $kat)
-                            <option value="{{ $kat->id }}" {{ old('kategori_id') == $kat->id ? 'selected' : '' }}>{{ $kat->nama }}</option>
+                            <option value="{{ $kat->id }}" {{ old('kategori_id', $modul->koleksi->kategori_id ?? '') == $kat->id ? 'selected' : '' }}>{{ $kat->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -60,7 +61,7 @@
             <!-- Judul Koleksi -->
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama / Judul Koleksi</label>
-                <input type="text" name="judul" required value="{{ old('judul') }}" placeholder="Contoh: Pisau Tumbuk Lada peninggalan..." 
+                <input type="text" name="judul" required value="{{ old('judul', $modul->judul) }}" placeholder="Contoh: Pisau Tumbuk Lada peninggalan..." 
                        class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm transition font-medium bg-white">
             </div>
 
@@ -68,7 +69,7 @@
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Deskripsi Umum</label>
                 <textarea name="deskripsi_umum" required rows="6" placeholder="Tuliskan gambaran umum koleksi budaya ini..." 
-                          class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm leading-relaxed bg-white resize-y">{{ old('deskripsi_umum') }}</textarea>
+                          class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm leading-relaxed bg-white resize-y">{{ old('deskripsi_umum', json_decode($modul->konten)->deskripsi_umum ?? '') }}</textarea>
                 <p class="text-xs text-gray-500 mt-2">Berikan penjelasan singkat namun padat yang mudah dipahami oleh publik.</p>
             </div>
 
@@ -76,7 +77,7 @@
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Sejarah & Makna Filosofis (Opsional)</label>
                 <textarea name="sejarah_makna" rows="8" placeholder="Tuliskan sejarah, asal usul, atau makna filosofis dari koleksi budaya ini..." 
-                          class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm leading-relaxed bg-white resize-y">{{ old('sejarah_makna') }}</textarea>
+                          class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm leading-relaxed bg-white resize-y">{{ old('sejarah_makna', json_decode($modul->konten)->sejarah_makna ?? '') }}</textarea>
             </div>
             
             <!-- Unggah Media Galeri -->
@@ -114,11 +115,11 @@
                 <div class="flex gap-4 mt-3">
                     <div class="w-1/2">
                         <label class="block text-xs text-gray-500 font-semibold mb-1">Latitude</label>
-                        <input type="text" id="latitude" name="latitude" value="{{ old('latitude') }}" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                        <input type="text" id="latitude" name="latitude" value="{{ old('latitude', $modul->latitude) }}" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
                     </div>
                     <div class="w-1/2">
                         <label class="block text-xs text-gray-500 font-semibold mb-1">Longitude</label>
-                        <input type="text" id="longitude" name="longitude" value="{{ old('longitude') }}" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+                        <input type="text" id="longitude" name="longitude" value="{{ old('longitude', $modul->longitude) }}" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
                     </div>
                 </div>
             </div>
@@ -142,8 +143,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- MAP INITIALIZATION ---
-        const defaultLat = 3.1000;
-        const defaultLng = 98.4833;
+        const defaultLat = {{ $modul->latitude ?? 3.1000 }};
+        const defaultLng = {{ $modul->longitude ?? 98.4833 }};
         
         const map = L.map('map').setView([defaultLat, defaultLng], 11);
         

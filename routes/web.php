@@ -211,6 +211,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/koleksi', [\App\Http\Controllers\AdminController::class, 'koleksi'])->name('admin.koleksi');
     Route::get('/admin/koleksi/create', [\App\Http\Controllers\AdminController::class, 'createKoleksi'])->name('admin.koleksi.create');
     Route::post('/admin/koleksi', [\App\Http\Controllers\AdminController::class, 'storeKoleksi'])->name('admin.koleksi.store');
+    Route::get('/admin/koleksi/{id}/edit', [\App\Http\Controllers\AdminController::class, 'editKoleksi'])->name('admin.koleksi.edit');
+    Route::put('/admin/koleksi/{id}', [\App\Http\Controllers\AdminController::class, 'updateKoleksi'])->name('admin.koleksi.update');
 
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');

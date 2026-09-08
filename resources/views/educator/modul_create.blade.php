@@ -148,6 +148,7 @@
                                 </div>
                                 <button type="button" id="btn-search-map" class="absolute right-2 top-1.5 px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs rounded border border-gray-300">Cari</button>
                             </div>
+                            <ul id="search-results" class="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg top-11 max-h-48 overflow-y-auto hidden"></ul>
                         </div>
                         
                         <div id="locationMap" class="w-full h-80 rounded-md border border-gray-300 shadow-inner z-0"></div>
@@ -213,23 +214,61 @@
             });
         }
         
-        document.getElementById('btn-search-map').addEventListener('click', function() {
-            const query = document.getElementById('map-search').value;
-            if(!query) return;
+        const searchInput = document.getElementById('map-search');
+        const searchResults = document.getElementById('search-results');
+        const btnSearch = document.getElementById('btn-search-map');
+
+        function doSearch() {
+            const query = searchInput.value.trim();
+            if(query.length < 3) {
+                if(searchResults) searchResults.classList.add('hidden');
+                return;
+            }
+
+            const searchQuery = encodeURIComponent(query + ", Kabupaten Karo, Sumatera Utara");
             
-            // Search focused on Kabupaten Karo
-            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query + ', Kabupaten Karo, Sumatera Utara'))
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`)
                 .then(res => res.json())
                 .then(data => {
-                    if(data && data.length > 0) {
-                        const lat = parseFloat(data[0].lat);
-                        const lng = parseFloat(data[0].lon);
-                        map.setView([lat, lng], 14);
-                        setMarker(lat, lng);
+                    if(!searchResults) return;
+                    searchResults.innerHTML = '';
+                    if(data.length > 0) {
+                        searchResults.classList.remove('hidden');
+                        data.forEach(item => {
+                            const li = document.createElement('li');
+                            li.className = 'px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 border-b last:border-0';
+                            li.textContent = item.display_name;
+                            li.onclick = () => {
+                                const lat = parseFloat(item.lat);
+                                const lng = parseFloat(item.lon);
+                                map.setView([lat, lng], 14);
+                                setMarker(lat, lng);
+                                searchResults.classList.add('hidden');
+                            };
+                            searchResults.appendChild(li);
+                        });
                     } else {
-                        alert('Lokasi tidak ditemukan di Kabupaten Karo.');
+                        searchResults.classList.remove('hidden');
+                        const li = document.createElement('li');
+                        li.className = 'px-4 py-2 text-sm text-gray-500';
+                        li.textContent = 'Lokasi tidak ditemukan';
+                        searchResults.appendChild(li);
                     }
                 });
+        }
+
+        if(btnSearch) {
+            btnSearch.addEventListener('click', doSearch);
+        }
+        
+        if(searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    doSearch();
+                }
+            });
+        }
         });
 
         // Gallery File Preview
