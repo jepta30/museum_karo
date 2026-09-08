@@ -268,6 +268,12 @@
                     searchResults.innerHTML = '';
                     if(data.length > 0) {
                         searchResults.classList.remove('hidden');
+                        // Auto-move ke hasil pertama
+                        const firstLat = parseFloat(data[0].lat);
+                        const firstLng = parseFloat(data[0].lon);
+                        map.setView([firstLat, firstLng], 14);
+                        setMarker(firstLat, firstLng);
+
                         data.forEach(item => {
                             const li = document.createElement('li');
                             li.className = 'px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 border-b last:border-0';
@@ -277,6 +283,7 @@
                                 const lng = parseFloat(item.lon);
                                 map.setView([lat, lng], 14);
                                 setMarker(lat, lng);
+                                searchInput.value = item.display_name.split(',')[0];
                                 searchResults.classList.add('hidden');
                             };
                             searchResults.appendChild(li);

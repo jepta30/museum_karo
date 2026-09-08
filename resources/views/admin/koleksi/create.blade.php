@@ -198,6 +198,14 @@
                         searchResults.innerHTML = '';
                         if(data.length > 0) {
                             searchResults.classList.remove('hidden');
+                        // Auto-move ke hasil pertama
+                        const firstLat = parseFloat(data[0].lat);
+                        const firstLng = parseFloat(data[0].lon);
+                        map.setView([firstLat, firstLng], 14);
+                        marker.setLatLng([firstLat, firstLng]);
+                        latInput.value = firstLat.toFixed(6);
+                        lngInput.value = firstLng.toFixed(6);
+
                             data.forEach(item => {
                                 const li = document.createElement('li');
                                 li.className = 'px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 border-b last:border-0';
