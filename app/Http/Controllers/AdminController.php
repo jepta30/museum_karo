@@ -152,6 +152,12 @@ class AdminController extends Controller
             'nomor_koleksi' => 'required|string|unique:koleksi,nomor_inventaris_final',
             'kategori_id' => 'required|exists:kategori,id',
             'judul' => 'required|string|max:255',
+            'nama_penyerah' => 'nullable|string|max:255',
+            'asal_koleksi' => 'nullable|string|max:255',
+            'kondisi_fisik' => 'nullable|string|max:255',
+            'nama_penyerah' => 'nullable|string|max:255',
+            'asal_koleksi' => 'nullable|string|max:255',
+            'kondisi_fisik' => 'nullable|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
             'galeri_files.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200'
@@ -161,8 +167,13 @@ class AdminController extends Controller
         $koleksi->nama_sementara = $request->judul;
         $koleksi->nomor_inventaris_final = $request->nomor_koleksi;
         $koleksi->kategori_id = $request->kategori_id;
+            $koleksi->nama_penyerah = $request->nama_penyerah ?: 'Museum Pusaka Karo';
+            $koleksi->alamat_penyerah = $request->asal_koleksi;
+            $koleksi->kondisi_awal = $request->kondisi_fisik;
         $koleksi->status = 'dipublikasi';
-        $koleksi->nama_penyerah = 'Admin (Bypass)';
+        $koleksi->nama_penyerah = $request->nama_penyerah ?: 'Museum Pusaka Karo';
+        $koleksi->alamat_penyerah = $request->asal_koleksi;
+        $koleksi->kondisi_awal = $request->kondisi_fisik;
         $koleksi->tanggal_terima = now();
         $koleksi->path_foto = '-'; // Akan diupdate jika ada foto
         $koleksi->save();
@@ -216,6 +227,12 @@ class AdminController extends Controller
             'nomor_koleksi' => 'required|string',
             'kategori_id' => 'required|exists:kategori,id',
             'judul' => 'required|string|max:255',
+            'nama_penyerah' => 'nullable|string|max:255',
+            'asal_koleksi' => 'nullable|string|max:255',
+            'kondisi_fisik' => 'nullable|string|max:255',
+            'nama_penyerah' => 'nullable|string|max:255',
+            'asal_koleksi' => 'nullable|string|max:255',
+            'kondisi_fisik' => 'nullable|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
             'galeri_files.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200'
@@ -228,6 +245,9 @@ class AdminController extends Controller
             $koleksi->nama_sementara = $request->judul;
             $koleksi->nomor_inventaris_final = $request->nomor_koleksi;
             $koleksi->kategori_id = $request->kategori_id;
+            $koleksi->nama_penyerah = $request->nama_penyerah ?: 'Museum Pusaka Karo';
+            $koleksi->alamat_penyerah = $request->asal_koleksi;
+            $koleksi->kondisi_awal = $request->kondisi_fisik;
             $koleksi->save();
         }
 
