@@ -252,50 +252,141 @@
         const searchResults = document.getElementById('search-results');
         const btnSearch = document.getElementById('btn-search-map');
 
+        
+        let karoVillages = [];
+        fetch('/karo_villages.json')
+            .then(res => res.json())
+            .then(data => { karoVillages = data; })
+            .catch(err => console.error('Gagal memuat data desa:', err));
+
+                let karoVillages = [];
+        fetch('/karo_villages.json')
+            .then(res => res.json())
+            .then(data => { karoVillages = data; })
+            .catch(err => console.error('Gagal memuat data desa:', err));
+
         function doSearch() {
-            const query = searchInput.value.trim();
+            const query = searchInput.value.trim().toLowerCase();
             if(query.length < 3) {
                 if(searchResults) searchResults.classList.add('hidden');
                 return;
             }
 
-            const searchQuery = encodeURIComponent(query + ", Kabupaten Karo, Sumatera Utara");
-            
-            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`)
-                .then(res => res.json())
-                .then(data => {
-                    if(!searchResults) return;
-                    searchResults.innerHTML = '';
-                    if(data.length > 0) {
-                        searchResults.classList.remove('hidden');
-                        // Auto-move ke hasil pertama
-                        const firstLat = parseFloat(data[0].lat);
-                        const firstLng = parseFloat(data[0].lon);
-                        map.setView([firstLat, firstLng], 14);
-                        setMarker(firstLat, firstLng);
+            // Cari di data desa lokal dulu
+            let matchedVillages = karoVillages.filter(v => 
+                v.name.toLowerCase().includes(query) || 
+                v.kecamatan.toLowerCase().includes(query)
+            );
 
-                        data.forEach(item => {
-                            const li = document.createElement('li');
-                            li.className = 'px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 border-b last:border-0';
-                            li.textContent = item.display_name;
-                            li.onclick = () => {
-                                const lat = parseFloat(item.lat);
-                                const lng = parseFloat(item.lon);
-                                map.setView([lat, lng], 14);
-                                setMarker(lat, lng);
-                                searchInput.value = item.display_name.split(',')[0];
-                                searchResults.classList.add('hidden');
-                            };
-                            searchResults.appendChild(li);
-                        });
-                    } else {
-                        searchResults.classList.remove('hidden');
-                        const li = document.createElement('li');
-                        li.className = 'px-4 py-2 text-sm text-gray-500';
-                        li.textContent = 'Lokasi tidak ditemukan';
-                        searchResults.appendChild(li);
-                    }
+            if(matchedVillages.length > 0) {
+                if(!searchResults) return;
+                searchResults.innerHTML = '';
+                searchResults.classList.remove('hidden');
+                
+                matchedVillages.slice(0, 5).forEach(village => {
+                    const li = document.createElement('li');
+                    li.className = 'px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 border-b last:border-0';
+                    li.innerHTML = `<strong>${village.name}</strong> <span class="text-xs text-gray-500">Kec. ${village.kecamatan}</span>`;
+                    
+                    li.onclick = () => {
+                        searchInput.value = village.name;
+                        searchResults.classList.add('hidden');
+                        
+                        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(village.search_query)}`)
+                            .then(res => res.json())
+                            .then(data => {
+                                if(data.length > 0) {
+                                    const lat = parseFloat(data[0].lat);
+                                    const lon = parseFloat(data[0].lon);
+                                    map.setView([lat, lon], 14);
+                                    if(typeof setMarker === 'function') {
+                                        setMarker(lat, lon); // Educator
+                                    } else {
+                                        marker.setLatLng([lat, lon]); // Admin
+                                        latInput.value = lat.toFixed(6);
+                                        lngInput.value = lon.toFixed(6);
+                                    }
+                                } else {
+                                    alert(`Titik koordinat untuk ${village.name} belum terdata akurat di peta OpenStreetMap.`);
+                                }
+                            });
+                    };
+                    searchResults.appendChild(li);
                 });
+                
+                // Auto-click the first one to move pin
+                
+                // Auto-move ke hasil pertama TANPA menyembunyikan dropdown
+                const firstVillage = matchedVillages[0];
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(firstVillage.search_query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.length > 0) {
+                            const lat = parseFloat(data[0].lat);
+                            const lon = parseFloat(data[0].lon);
+                            map.setView([lat, lon], 14);
+                            if(typeof setMarker === 'function') {
+                                setMarker(lat, lon);
+                            } else {
+                                marker.setLatLng([lat, lon]);
+                                latInput.value = lat.toFixed(6);
+                                lngInput.value = lon.toFixed(6);
+                            }
+                        }
+                    });
+
+                
+            } else {
+                const searchQuery = encodeURIComponent(query + ", Kabupaten Karo, Sumatera Utara");
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${searchQuery}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(!searchResults) return;
+                        searchResults.innerHTML = '';
+                        if(data.length > 0) {
+                            searchResults.classList.remove('hidden');
+                            
+                            const firstLat = parseFloat(data[0].lat);
+                            const firstLng = parseFloat(data[0].lon);
+                            map.setView([firstLat, firstLng], 14);
+                            if(typeof setMarker === 'function') {
+                                setMarker(firstLat, firstLng);
+                            } else {
+                                marker.setLatLng([firstLat, firstLng]);
+                                latInput.value = firstLat.toFixed(6);
+                                lngInput.value = firstLng.toFixed(6);
+                            }
+                            
+                            data.forEach(item => {
+                                const li = document.createElement('li');
+                                li.className = 'px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700 border-b last:border-0';
+                                li.textContent = item.display_name;
+                                li.onclick = () => {
+                                    const lat = parseFloat(item.lat);
+                                    const lng = parseFloat(item.lon);
+                                    map.setView([lat, lng], 14);
+                                    if(typeof setMarker === 'function') {
+                                        setMarker(lat, lng);
+                                        searchInput.value = item.display_name.split(',')[0];
+                                    } else {
+                                        marker.setLatLng([lat, lng]);
+                                        latInput.value = lat.toFixed(6);
+                                        lngInput.value = lng.toFixed(6);
+                                        searchInput.value = item.display_name.split(',')[0];
+                                    }
+                                    searchResults.classList.add('hidden');
+                                };
+                                searchResults.appendChild(li);
+                            });
+                        } else {
+                            searchResults.classList.remove('hidden');
+                            const li = document.createElement('li');
+                            li.className = 'px-4 py-2 text-sm text-gray-500';
+                            li.textContent = 'Lokasi tidak ditemukan';
+                            searchResults.appendChild(li);
+                        }
+                    });
+            }
         }
 
         if(btnSearch) {

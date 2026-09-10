@@ -311,7 +311,7 @@
     </footer>
 
     <!-- Modal Buku Tamu -->
-    @if(!session()->has('buku_tamu_filled'))
+    @if(!request()->hasCookie('buku_tamu_filled'))
     <div id="modal-buku-tamu" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden relative">
             <div class="px-8 py-6 border-b border-gray-100 flex justify-between items-center">
@@ -350,12 +350,23 @@
     <script>
         function closeBukuTamu() {
             document.getElementById('modal-buku-tamu').classList.add('hidden');
-            localStorage.setItem('buku_tamu_closed', 'true');
+            localStorage.setItem('buku_tamu_closed_timestamp', new Date().getTime());
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            if(localStorage.getItem('buku_tamu_closed') === 'true') {
-                document.getElementById('modal-buku-tamu').classList.add('hidden');
+            const closedTimestamp = localStorage.getItem('buku_tamu_closed_timestamp');
+            if(closedTimestamp) {
+                const now = new Date().getTime();
+                const diffHours = (now - parseInt(closedTimestamp)) / (1000 * 60 * 60);
+                if(diffHours < 24) {
+                    const modal = document.getElementById('modal-buku-tamu');
+                    if(modal) modal.classList.add('hidden');
+                } else {
+                    localStorage.removeItem('buku_tamu_closed_timestamp');
+                }
+            } else if(localStorage.getItem('buku_tamu_closed') === 'true') {
+                // Reset legacy users
+                localStorage.removeItem('buku_tamu_closed');
             }
         });
     </script>

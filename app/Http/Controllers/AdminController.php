@@ -283,5 +283,50 @@ class AdminController extends Controller
 
         return redirect()->route('admin.koleksi')->with('success', 'Koleksi Budaya berhasil diperbarui!');
     }
+    public function laporanKoleksi()
+    {
+        $koleksi = \App\Models\Koleksi::where('status', 'dipublikasi')->with('kategori')->paginate(20);
+        return view('admin.koleksi.laporan', compact('koleksi'));
+    }
+
+    public function exportLaporan(Request $request)
+    {
+        $koleksi = \App\Models\Koleksi::where('status', 'dipublikasi')->with('kategori')->get();
+        
+        if ($request->query('type') === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.koleksi.pdf', compact('koleksi'))
+                ->setPaper('a4', 'landscape');
+            return $pdf->download('laporan_koleksi_' . date('Y-m-d') . '.pdf');
+        }
+
+        $fileName = 'laporan_koleksi_' . date('Y-m-d_H-i-s') . '.csv';
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+        $columns = ['Nomor Koleksi', 'Nama Koleksi', 'Jenis Koleksi', 'Nama Penghibah/Penitip', 'Cara Perolehan', 'Tempat Perolehan', 'Tanggal masuk', 'Keterangan'];
+        $callback = function() use($koleksi, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($koleksi as $item) {
+                fputcsv($file, [
+                    $item->nomor_inventaris_final,
+                    $item->nama_sementara,
+                    $item->kategori->nama ?? '',
+                    $item->nama_penyerah,
+                    $item->klaim_asal_usul ?? '-',
+                    $item->alamat_penyerah,
+                    \Carbon\Carbon::parse($item->tanggal_terima)->format('Y-m-d'),
+                    $item->kondisi_awal
+                ]);
+            }
+            fclose($file);
+        };
+        return response()->stream($callback, 200, $headers);
+    }
+
 }
 
