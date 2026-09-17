@@ -154,9 +154,7 @@ class AdminController extends Controller
             'judul' => 'required|string|max:255',
             'nama_penyerah' => 'nullable|string|max:255',
             'asal_koleksi' => 'nullable|string|max:255',
-            'kondisi_fisik' => 'nullable|string|max:255',
-            'nama_penyerah' => 'nullable|string|max:255',
-            'asal_koleksi' => 'nullable|string|max:255',
+            'cara_perolehan' => 'nullable|string|max:255',
             'kondisi_fisik' => 'nullable|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
@@ -167,13 +165,11 @@ class AdminController extends Controller
         $koleksi->nama_sementara = $request->judul;
         $koleksi->nomor_inventaris_final = $request->nomor_koleksi;
         $koleksi->kategori_id = $request->kategori_id;
-            $koleksi->nama_penyerah = $request->nama_penyerah ?: 'Museum Pusaka Karo';
-            $koleksi->alamat_penyerah = $request->asal_koleksi;
-            $koleksi->kondisi_awal = $request->kondisi_fisik;
-        $koleksi->status = 'dipublikasi';
         $koleksi->nama_penyerah = $request->nama_penyerah ?: 'Museum Pusaka Karo';
         $koleksi->alamat_penyerah = $request->asal_koleksi;
+        $koleksi->klaim_asal_usul = $request->cara_perolehan;
         $koleksi->kondisi_awal = $request->kondisi_fisik;
+        $koleksi->status = 'dipublikasi';
         $koleksi->tanggal_terima = now();
         $koleksi->path_foto = '-'; // Akan diupdate jika ada foto
         $koleksi->save();
@@ -229,9 +225,7 @@ class AdminController extends Controller
             'judul' => 'required|string|max:255',
             'nama_penyerah' => 'nullable|string|max:255',
             'asal_koleksi' => 'nullable|string|max:255',
-            'kondisi_fisik' => 'nullable|string|max:255',
-            'nama_penyerah' => 'nullable|string|max:255',
-            'asal_koleksi' => 'nullable|string|max:255',
+            'cara_perolehan' => 'nullable|string|max:255',
             'kondisi_fisik' => 'nullable|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
@@ -247,6 +241,7 @@ class AdminController extends Controller
             $koleksi->kategori_id = $request->kategori_id;
             $koleksi->nama_penyerah = $request->nama_penyerah ?: 'Museum Pusaka Karo';
             $koleksi->alamat_penyerah = $request->asal_koleksi;
+            $koleksi->klaim_asal_usul = $request->cara_perolehan;
             $koleksi->kondisi_awal = $request->kondisi_fisik;
             $koleksi->save();
         }
@@ -285,13 +280,13 @@ class AdminController extends Controller
     }
     public function laporanKoleksi()
     {
-        $koleksi = \App\Models\Koleksi::where('status', 'dipublikasi')->with('kategori')->paginate(20);
+        $koleksi = \App\Models\Koleksi::with('kategori')->orderBy('created_at', 'desc')->paginate(20);
         return view('admin.koleksi.laporan', compact('koleksi'));
     }
 
     public function exportLaporan(Request $request)
     {
-        $koleksi = \App\Models\Koleksi::where('status', 'dipublikasi')->with('kategori')->get();
+        $koleksi = \App\Models\Koleksi::with('kategori')->orderBy('created_at', 'desc')->get();
         
         if ($request->query('type') === 'pdf') {
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.koleksi.pdf', compact('koleksi'))
@@ -328,5 +323,32 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function laporanKomentar()
+    {
+        $komentars = \App\Models\Komentar::with('koleksi')->latest()->paginate(20);
+        return view('admin.laporan.komentar', compact('komentars'));
+    }
+
+    public function exportKomentarPdf()
+    {
+        $komentars = \App\Models\Komentar::with('koleksi')->latest()->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.pdf_komentar', compact('komentars'))
+            ->setPaper('a4', 'landscape');
+        return $pdf->download('Laporan_Komentar_Pengunjung_' . date('Y-m-d') . '.pdf');
+    }
+
+    public function laporanSaran()
+    {
+        $sarans = \App\Models\SaranPesan::latest()->paginate(20);
+        return view('admin.laporan.saran', compact('sarans'));
+    }
+
+    public function exportSaranPdf()
+    {
+        $sarans = \App\Models\SaranPesan::latest()->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.pdf_saran', compact('sarans'))
+            ->setPaper('a4', 'landscape');
+        return $pdf->download('Laporan_Saran_Pesan_' . date('Y-m-d') . '.pdf');
+    }
 }
 

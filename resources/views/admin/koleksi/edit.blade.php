@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="max-w-4xl mx-auto pb-10">
@@ -59,7 +59,7 @@
             </div>
 
             <!-- Informasi Tambahan untuk Pengunjung -->
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
                   <div>
                       <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama Pemilik/Penitip (Opsional)</label>
                       <input type="text" name="nama_penyerah" value="{{ old('nama_penyerah', $modul->koleksi->nama_penyerah ?? '') }}" placeholder="Contoh: Keluarga Bpk. Tarigan" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm transition bg-white">
@@ -67,6 +67,10 @@
                   <div>
                       <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Asal Koleksi (Opsional)</label>
                       <input type="text" name="asal_koleksi" value="{{ old('asal_koleksi', $modul->koleksi->alamat_penyerah ?? '') }}" placeholder="Contoh: Desa Barusjahe / Tidak Diketahui" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm transition bg-white">
+                  </div>
+                  <div>
+                      <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Cara Perolehan (Opsional)</label>
+                      <input type="text" name="cara_perolehan" value="{{ old('cara_perolehan', $modul->koleksi->klaim_asal_usul ?? '') }}" placeholder="Contoh: Hibah / Temuan" class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm transition bg-white">
                   </div>
                   <div>
                       <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kondisi Fisik (Opsional)</label>

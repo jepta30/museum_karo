@@ -216,6 +216,12 @@ Route::middleware('auth')->group(function () {
     // New route for published collections report
     Route::get('/admin/koleksi/laporan', [\App\Http\Controllers\AdminController::class, 'laporanKoleksi'])->name('admin.koleksi.laporan');
     Route::get('/admin/koleksi/laporan/export', [\App\Http\Controllers\AdminController::class, 'exportLaporan'])->name('admin.koleksi.laporan.export');
+    
+    // Laporan Komentar & Saran
+    Route::get('/admin/laporan/komentar', [\App\Http\Controllers\AdminController::class, 'laporanKomentar'])->name('admin.laporan.komentar');
+    Route::get('/admin/laporan/komentar/export', [\App\Http\Controllers\AdminController::class, 'exportKomentarPdf'])->name('admin.laporan.komentar.export');
+    Route::get('/admin/laporan/saran', [\App\Http\Controllers\AdminController::class, 'laporanSaran'])->name('admin.laporan.saran');
+    Route::get('/admin/laporan/saran/export', [\App\Http\Controllers\AdminController::class, 'exportSaranPdf'])->name('admin.laporan.saran.export');
 
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');

@@ -81,6 +81,12 @@
                                 </select>
                             </div>
                             
+                            <!-- Cara Perolehan -->
+                            <div class="mb-4">
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Cara Perolehan (Hibah/Titipan/Temuan, dll)</label>
+                                <input type="text" name="klaim_asal_usul[]" placeholder="cth., Hibah dari keluarga..." class="w-full p-2.5 border border-gray-200 rounded text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red transition">
+                            </div>
+
                             <!-- Catatan -->
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-1">Kondisi Awal</label>
