@@ -177,11 +177,17 @@ class EducatorController extends Controller
         $modul = ModulEdukasi::findOrFail($id);
         
         $request->validate([
+            'cara_perolehan' => 'nullable|string|max:255',
             'judul' => 'required|string|max:255',
             'deskripsi_umum' => 'required|string',
             'sejarah_makna' => 'nullable|string',
             'galeri_files.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:51200'
         ]);
+
+        if ($modul->koleksi) {
+            $modul->koleksi->klaim_asal_usul = $request->cara_perolehan;
+            $modul->koleksi->save();
+        }
 
         $modul->judul = $request->judul;
         $modul->latitude = $request->latitude;

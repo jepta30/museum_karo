@@ -82,6 +82,13 @@
                 <form action="{{ route('educator.modul.update', $modul->id) }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-8">
                     @csrf
                     
+                    <!-- Cara Perolehan -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Cara Perolehan Budaya (Opsional)</label>
+                        <input type="text" name="cara_perolehan" value="{{ old('cara_perolehan', $koleksi->klaim_asal_usul ?? '') }}" placeholder="Contoh: Hibah / Temuan" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-museum-red focus:border-museum-red text-sm transition bg-white">
+                    </div>
+                    
                     <!-- Judul Modul -->
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Judul Materi / Modul</label>
