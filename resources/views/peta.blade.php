@@ -78,10 +78,14 @@
         L.marker([3.13220, 98.46650], {icon: museumIcon, zIndexOffset: 1000})
             .addTo(map)
             .bindPopup(`
-                <div class="text-center p-2">
+                <div class="text-center p-3">
                     <img src="/images/tampakdepan.png" class="w-full h-24 object-cover rounded mb-2">
                     <h3 class="font-bold text-[#8b1c1c] text-sm mb-1">Museum Pusaka Karo</h3>
-                    <p class="text-xs text-gray-600">Jl. Perwira No. 3, Berastagi</p>
+                    <p class="text-xs text-gray-600 mb-3">Jl. Perwira No. 3, Berastagi</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Museum+Pusaka+Karo+Berastagi" target="_blank" class="text-center w-full px-3 py-1.5 bg-gray-100 border border-gray-300 text-gray-700 text-xs font-semibold rounded hover:bg-gray-200 transition flex items-center justify-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        Buka di Google Maps
+                    </a>
                 </div>
             `);
 

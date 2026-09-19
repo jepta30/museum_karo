@@ -112,59 +112,6 @@
         </div>
     </div>
 
-    <!-- SECTION 3: Pengawasan Sumber Daya Kurikulum -->
-    <div>
-        <h3 class="text-2xl font-serif font-bold text-gray-800 mb-6">Pengawasan Sumber Daya Kurikulum</h3>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Box 1: Gambar Resolusi Tinggi -->
-            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
-                <div class="w-full md:w-1/2 bg-gray-200 min-h-[240px] relative">
-                    <!-- Placeholder using external museum-like image or color blocks -->
-                    <div class="absolute inset-0 bg-[#4a1b1b] opacity-10"></div>
-                    <!-- Create a collage effect with CSS -->
-                    <div class="absolute top-4 left-4 right-4 bottom-4 bg-[#ece5dc] shadow-md transform -rotate-2 flex items-center justify-center p-2">
-                        <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1579762593175-20226054cad0?q=80&w=600')] bg-cover bg-center"></div>
-                    </div>
-                    <div class="absolute top-8 left-8 right-8 bottom-8 bg-white shadow-lg transform rotate-3 flex items-center justify-center p-2">
-                        <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1596464528148-52b86e0fc21c?q=80&w=600')] bg-cover bg-center"></div>
-                    </div>
-                </div>
-                <div class="p-8 md:w-1/2 flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-2xl font-serif font-bold text-[#4a1b1b] mb-3 leading-tight">Arsip Gambar<br>Resolusi Tinggi</h4>
-                        <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                            Koleksi {{ number_format($totalImages) }}+ gambar koleksi budaya terverifikasi yang tersedia untuk disisipkan ke dalam modul edukasi.
-                        </p>
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-end mb-2">
-                            <span class="text-[11px] font-bold text-gray-700 uppercase tracking-widest">Penggunaan Kapasitas</span>
-                            <span class="text-sm font-bold text-gray-600">78%</span>
-                        </div>
-                        <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-[#4a1b1b] rounded-full" style="width: 78%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Box 2: Rencana Pelajaran -->
-            <div class="bg-[#fbf8f5] rounded-xl shadow-sm border border-[#f0e8df] p-8 flex flex-col justify-between relative overflow-hidden">
-                <div>
-                    <svg class="w-6 h-6 text-[#4a1b1b] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    <h4 class="text-2xl font-serif font-bold text-gray-900 mb-3">Rencana Pelajaran</h4>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        Template standar kurikulum nasional
-                    </p>
-                </div>
-                
-                <div class="flex justify-between items-end mt-12">
-                    <h2 class="text-6xl font-serif font-bold text-[#4a1b1b] leading-none">128</h2>
-                    <a href="#" class="text-xs font-bold text-[#4a1b1b] hover:underline">Tinjau Katalog</a>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 @endsection

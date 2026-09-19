@@ -217,11 +217,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/koleksi/laporan', [\App\Http\Controllers\AdminController::class, 'laporanKoleksi'])->name('admin.koleksi.laporan');
     Route::get('/admin/koleksi/laporan/export', [\App\Http\Controllers\AdminController::class, 'exportLaporan'])->name('admin.koleksi.laporan.export');
     
-    // Laporan Komentar & Saran
+    // Laporan Komentar & Saran & Pengunjung
     Route::get('/admin/laporan/komentar', [\App\Http\Controllers\AdminController::class, 'laporanKomentar'])->name('admin.laporan.komentar');
     Route::get('/admin/laporan/komentar/export', [\App\Http\Controllers\AdminController::class, 'exportKomentarPdf'])->name('admin.laporan.komentar.export');
     Route::get('/admin/laporan/saran', [\App\Http\Controllers\AdminController::class, 'laporanSaran'])->name('admin.laporan.saran');
     Route::get('/admin/laporan/saran/export', [\App\Http\Controllers\AdminController::class, 'exportSaranPdf'])->name('admin.laporan.saran.export');
+    Route::get('/admin/laporan/pengunjung', [\App\Http\Controllers\AdminController::class, 'laporanPengunjung'])->name('admin.laporan.pengunjung');
+    Route::get('/admin/laporan/pengunjung/export', [\App\Http\Controllers\AdminController::class, 'exportPengunjungPdf'])->name('admin.laporan.pengunjung.export');
+    Route::get('/admin/log/export', [\App\Http\Controllers\AdminController::class, 'exportLogPdf'])->name('admin.log.export');
 
     // Rute Registrar
     Route::get('/registrar', [RegistrarController::class, 'index'])->name('registrar.dashboard');

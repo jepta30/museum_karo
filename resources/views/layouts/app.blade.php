@@ -31,7 +31,7 @@
 <body class="bg-museum-bg text-gray-800 font-sans h-screen flex overflow-hidden">
 
     <!-- SIDEBAR KIRI -->
-    <aside class="w-64 border-r border-[#6a1515] flex flex-col justify-between shrink-0 bg-gradient-to-b from-[#8b1c1c] via-[#6a1515] to-[#4a0f0f] text-white">
+    <aside id="sidebar" class="w-64 border-r border-[#6a1515] flex-col justify-between shrink-0 bg-gradient-to-b from-[#8b1c1c] via-[#6a1515] to-[#4a0f0f] text-white absolute inset-y-0 left-0 z-50 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out flex">
         <div>
             <!-- Logo & Title -->
             <div class="p-6 flex items-center gap-3 border-b border-[#a82525] mb-2">
@@ -64,6 +64,10 @@
                     <a href="{{ route('admin.laporan.saran') }}" class="flex items-center gap-3 px-4 py-2.5 mt-1 text-sm font-medium rounded-md {{ request()->routeIs('admin.laporan.saran') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                         Laporan Saran & Pesan
+                    </a>
+                    <a href="{{ route('admin.laporan.pengunjung') }}" class="flex items-center gap-3 px-4 py-2.5 mt-1 text-sm font-medium rounded-md {{ request()->routeIs('admin.laporan.pengunjung') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        Laporan Pengunjung
                     </a>
                     <a href="{{ route('admin.users') }}" class="flex items-center gap-3 px-4 py-2.5 mt-1 text-sm font-medium rounded-md {{ request()->routeIs('admin.users') ? 'bg-white/20 text-white shadow-inner font-bold border-l-4 border-white' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -170,20 +174,26 @@
     <!-- AREA KANAN (Main Content) -->
     <div class="flex-1 flex flex-col h-screen min-w-0">
         <!-- TOPBAR -->
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0">
-            @if(Auth::check() && Auth::user()->peran === 'admin')
-                <h2 class="text-2xl font-serif text-[#8b1c1c] font-bold">Management System</h2>
-            @else
-                <h2 class="text-xl font-serif text-[#8b1c1c] font-bold">Museum Budaya Karo</h2>
-            @endif
-            <div class="flex items-center gap-6">
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8 shrink-0 relative z-40">
+            <div class="flex items-center gap-3">
+                <button id="mobile-menu-btn" class="md:hidden text-[#8b1c1c] focus:outline-none bg-red-50 p-1.5 rounded">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                @if(Auth::check() && Auth::user()->peran === 'admin')
+                    <h2 class="text-lg md:text-2xl font-serif text-[#8b1c1c] font-bold truncate hidden sm:block">Management System</h2>
+                @else
+                    <h2 class="text-lg md:text-xl font-serif text-[#8b1c1c] font-bold truncate hidden sm:block">Museum Budaya Karo</h2>
+                @endif
+            </div>
+            
+            <div class="flex items-center gap-3 md:gap-6">
                 <!-- Search Box -->
-                <div class="relative">
+                <div class="relative hidden md:block">
                     <svg class="w-4 h-4 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="Cari Koleksi..." class="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red w-64 transition">
+                    <input type="text" placeholder="Cari Koleksi..." class="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:border-museum-red focus:ring-1 focus:ring-museum-red w-48 md:w-64 transition">
                 </div>
                 <!-- Ikon Profil dll -->
-                <div class="flex items-center gap-4 text-gray-500">
+                <div class="flex items-center gap-3 md:gap-4 text-gray-500">
                     <button class="hover:text-[#8b1c1c] transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg></button>
                     <button class="hover:text-[#8b1c1c] transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></button>
                     <button class="hover:text-[#8b1c1c] transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
@@ -208,11 +218,27 @@
         </header>
 
         <!-- KONTEN DINAMIS -->
-        <main class="flex-1 overflow-y-auto p-8 bg-white">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-white relative">
+            <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
             @yield('content')
         </main>
     </div>
 
+    <script>
+        const btn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        btn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
+    </script>
     @stack('scripts')
 </body>
 </html>

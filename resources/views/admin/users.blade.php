@@ -58,49 +58,63 @@
             </div>
 
             <div class="bg-[#fdfbf9] border border-orange-100 rounded-xl overflow-hidden shadow-sm">
-                <table class="w-full text-left text-sm text-gray-700">
-                    <thead class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-orange-100 bg-orange-50/50">
-                        <tr>
-                            <th class="px-6 py-4">Nama / Kontak</th>
-                            <th class="px-6 py-4">Peran</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Login Terakhir</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-orange-100">
-                        @foreach($users as $user)
-                        <tr class="hover:bg-white transition">
-                            <td class="px-6 py-4 flex items-center gap-4">
-                                <div class="w-10 h-10 rounded bg-[#eee3db] flex items-center justify-center font-bold text-[#62231c] shrink-0">
-                                    {{ strtoupper(substr($user->name, 0, 2)) }}
-                                </div>
-                                <div>
-                                    <div class="font-bold text-gray-900">{{ $user->name }}</div>
-                                    <div class="text-[11px] text-gray-500">{{ $user->email }}</div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-gray-600 font-medium capitalize">
-                                {{ $user->peran === 'pimpinan' ? 'Direktur' : ($user->peran === 'kurator' ? 'Kurator Utama' : $user->peran) }}
-                            </td>
-                            <td class="px-6 py-4">
-                                @if($user->is_active)
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-bold uppercase rounded-full tracking-wide">Aktif</span>
-                                @else
-                                    <span class="px-3 py-1 bg-gray-200 text-gray-600 text-[10px] font-bold uppercase rounded-full tracking-wide">Nonaktif</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-[11px] text-gray-500 leading-tight">
-                                @if($user->last_login_at)
-                                    {{ $user->last_login_at->isToday() ? 'Hari ini' : ($user->last_login_at->isYesterday() ? 'Kemarin' : $user->last_login_at->format('d M Y')) }},<br>
-                                    {{ $user->last_login_at->format('H:i') }}
-                                @else
-                                    Belum pernah<br>login
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-700 min-w-[600px]">
+                        <thead class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-orange-100 bg-orange-50/50">
+                            <tr>
+                                <th class="px-6 py-4">Nama / Kontak</th>
+                                <th class="px-6 py-4">Peran</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Aktivitas Terakhir</th>
+                                <th class="px-6 py-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($users as $user)
+                            <tr class="hover:bg-white transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full border border-[#8b1c1c]/20 overflow-hidden shrink-0">
+                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=8b1c1c&color=fff" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-[#4a1c1c]">{{ $user->name }}</p>
+                                            <p class="text-[11px] text-gray-500">{{ $user->email }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider
+                                        {{ $user->peran == 'admin' ? 'bg-[#8b1c1c] text-white' : 
+                                        ($user->peran == 'kurator' ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-700') }}">
+                                        {{ $user->peran }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($user->is_active)
+                                        <span class="flex items-center gap-1.5 text-xs font-bold text-green-600">
+                                            <span class="w-2 h-2 rounded-full bg-green-500"></span> Aktif
+                                        </span>
+                                    @else
+                                        <span class="flex items-center gap-1.5 text-xs font-bold text-red-600">
+                                            <span class="w-2 h-2 rounded-full bg-red-500"></span> Nonaktif
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-xs text-gray-500">
+                                    <p>{{ $user->updated_at->diffForHumans() }}</p>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">via {{ request()->ip() }}</p>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="p-1.5 text-gray-400 hover:text-[#8b1c1c] transition" title="Edit Pengguna">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
                 <div class="px-6 py-4 border-t border-orange-100 flex items-center justify-between text-xs text-gray-500 bg-orange-50/30">
                     <span>Menampilkan {{ $users->firstItem() ?? 0 }}-{{ $users->lastItem() ?? 0 }} dari {{ $users->total() }} pengguna</span>
                     <div class="flex gap-2">

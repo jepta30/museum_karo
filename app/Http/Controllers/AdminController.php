@@ -26,10 +26,19 @@ class AdminController extends Controller
 
 
 
-        // 2. Log Aktivitas Terbaru
+        // 2. Statistik Login Harian (30 Hari Terakhir)
+        $dailyStats = \App\Models\LogAktivitas::where('aksi', 'Login ke dalam sistem')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->selectRaw('DATE(created_at) as date, count(*) as count')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->toArray();
+
+        // 3. Log Aktivitas Terbaru
         $logs = \App\Models\LogAktivitas::latest()->limit(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'logs'));
+        return view('admin.dashboard', compact('stats', 'dailyStats', 'logs'));
     }
 
     public function users()
@@ -349,6 +358,28 @@ class AdminController extends Controller
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.pdf_saran', compact('sarans'))
             ->setPaper('a4', 'landscape');
         return $pdf->download('Laporan_Saran_Pesan_' . date('Y-m-d') . '.pdf');
+    }
+
+    public function laporanPengunjung()
+    {
+        $pengunjungs = \App\Models\BukuTamu::latest()->paginate(20);
+        return view('admin.laporan.pengunjung', compact('pengunjungs'));
+    }
+
+    public function exportPengunjungPdf()
+    {
+        $pengunjungs = \App\Models\BukuTamu::latest()->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.pdf_pengunjung', compact('pengunjungs'))
+            ->setPaper('a4', 'landscape');
+        return $pdf->download('Laporan_Buku_Tamu_Pengunjung_' . date('Y-m-d') . '.pdf');
+    }
+
+    public function exportLogPdf()
+    {
+        $logs = \App\Models\LogAktivitas::latest()->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.pdf_log', compact('logs'))
+            ->setPaper('a4', 'portrait');
+        return $pdf->download('Laporan_Log_Audit_' . date('Y-m-d') . '.pdf');
     }
 }
 
