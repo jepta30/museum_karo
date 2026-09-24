@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <title>@yield('title', 'SIMPUKA - Sistem Informasi Museum Pusaka Karo')</title>
     
     <!-- Fonts -->
@@ -37,12 +38,15 @@
 <body class="bg-gray-50 text-gray-800 antialiased font-sans">
 
     <!-- Navbar -->
-    <nav class="bg-white px-6 py-4 flex items-center justify-between shadow-sm relative z-50">
-        <div class="flex items-center gap-4">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Museum Pusaka Karo" class="h-12 w-auto drop-shadow-sm">
-            <div class="hidden sm:block">
-                <h1 class="text-[#8b1c1c] font-serif font-bold text-xl leading-tight tracking-wide">SIMPUKA</h1>
-                <p class="text-[11px] text-gray-500 uppercase tracking-wider mt-0.5 font-medium">Sistem Informasi Museum Pusaka Karo</p>
+    <nav class="bg-white px-4 md:px-6 py-4 flex items-center justify-between shadow-sm relative z-50">
+        <div class="flex items-center gap-3">
+            <button id="mobile-menu-btn" class="lg:hidden text-[#8b1c1c] focus:outline-none bg-red-50 p-2 rounded">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Museum Pusaka Karo" class="h-10 md:h-12 w-auto drop-shadow-sm">
+            <div>
+                <h1 class="text-[#8b1c1c] font-serif font-bold text-lg md:text-xl leading-tight tracking-wide">SIMPUKA</h1>
+                <p class="text-[10px] md:text-[11px] text-gray-500 uppercase tracking-wider mt-0.5 font-medium">Sistem Informasi Museum Pusaka Karo</p>
             </div>
         </div>
         
@@ -56,18 +60,47 @@
             </div>
             
             @if (Route::has('login'))
+                <div class="hidden lg:block pl-6 border-l border-gray-200">
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-2 hover:text-[#8b1c1c] text-[#8b1c1c] transition ml-2 lg:ml-4 font-bold border border-[#8b1c1c] px-4 py-2 rounded">
+                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-2 hover:text-[#8b1c1c] text-[#8b1c1c] transition font-bold border border-[#8b1c1c] px-4 py-2 rounded">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         Dashboard
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="flex items-center gap-2 hover:text-white hover:bg-[#8b1c1c] text-gray-700 transition ml-2 lg:ml-4 border border-gray-300 px-4 py-2 rounded">
+                    <a href="{{ route('login') }}" class="flex items-center gap-2 hover:text-white hover:bg-[#8b1c1c] text-gray-700 transition border border-gray-300 px-4 py-2 rounded">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         Login Admin
                     </a>
                 @endauth
+                </div>
             @endif
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 z-40">
+            <div class="flex flex-col py-4 px-6 space-y-4 text-sm font-semibold text-gray-700">
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'text-[#8b1c1c]' : 'hover:text-[#8b1c1c] transition' }}">Beranda</a>
+                <a href="{{ route('katalog') }}" class="{{ request()->routeIs('katalog') ? 'text-[#8b1c1c]' : 'hover:text-[#8b1c1c] transition' }}">Katalog Koleksi</a>
+                <a href="{{ route('peta') }}" class="{{ request()->routeIs('peta') ? 'text-[#8b1c1c]' : 'hover:text-[#8b1c1c] transition' }}">Peta Titik Asal</a>
+                <a href="{{ route('tentang') }}" class="{{ request()->routeIs('tentang') ? 'text-[#8b1c1c]' : 'hover:text-[#8b1c1c] transition' }}">Tentang Kami</a>
+                <a href="{{ route('saran') }}" class="{{ request()->routeIs('saran') ? 'text-[#8b1c1c]' : 'hover:text-[#8b1c1c] transition' }}">Saran & Pesan</a>
+                
+                @if (Route::has('login'))
+                    <div class="border-t border-gray-200 pt-4 mt-2">
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="flex items-center gap-2 hover:text-[#8b1c1c] text-[#8b1c1c] transition font-bold">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="flex items-center gap-2 hover:text-[#8b1c1c] text-gray-700 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            Login Admin
+                        </a>
+                    @endauth
+                    </div>
+                @endif
+            </div>
         </div>
     </nav>
 
@@ -120,5 +153,16 @@
     </footer>
 
     @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            if (btn && menu) {
+                btn.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

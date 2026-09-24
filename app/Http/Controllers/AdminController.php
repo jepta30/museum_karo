@@ -287,6 +287,36 @@ class AdminController extends Controller
 
         return redirect()->route('admin.koleksi')->with('success', 'Koleksi Budaya berhasil diperbarui!');
     }
+
+    public function destroyKoleksi($id)
+    {
+        $modul = ModulEdukasi::findOrFail($id);
+        $koleksi = $modul->koleksi;
+        
+        // Log delete activity
+        LogAktivitas::create([
+            'user_id' => auth()->id(),
+            'nama_pengguna' => auth()->user()->name,
+            'aksi' => 'Menghapus Koleksi Budaya (Admin)',
+            'status' => 'Berhasil',
+            'ip_address' => request()->ip()
+        ]);
+
+        if ($koleksi) {
+            // Hapus komentar terkait
+            \App\Models\Komentar::where('koleksi_id', $koleksi->id)->delete();
+            $koleksi->delete(); 
+        }
+        
+        // Hapus galeri terkait modul jika ada
+        if (class_exists(\App\Models\GaleriModul::class)) {
+            \App\Models\GaleriModul::where('modul_edukasi_id', $modul->id)->delete();
+        }
+        $modul->delete();
+
+        return redirect()->route('admin.koleksi')->with('success', 'Koleksi Budaya beserta seluruh data terkait (komentar, galeri) berhasil dihapus!');
+    }
+
     public function laporanKoleksi()
     {
         $koleksi = \App\Models\Koleksi::with('kategori')->orderBy('created_at', 'desc')->paginate(20);

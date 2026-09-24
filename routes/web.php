@@ -213,6 +213,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/koleksi', [\App\Http\Controllers\AdminController::class, 'storeKoleksi'])->name('admin.koleksi.store');
     Route::get('/admin/koleksi/{id}/edit', [\App\Http\Controllers\AdminController::class, 'editKoleksi'])->name('admin.koleksi.edit');
     Route::put('/admin/koleksi/{id}', [\App\Http\Controllers\AdminController::class, 'updateKoleksi'])->name('admin.koleksi.update');
+    Route::delete('/admin/koleksi/{id}', [\App\Http\Controllers\AdminController::class, 'destroyKoleksi'])->name('admin.koleksi.destroy');
     // New route for published collections report
     Route::get('/admin/koleksi/laporan', [\App\Http\Controllers\AdminController::class, 'laporanKoleksi'])->name('admin.koleksi.laporan');
     Route::get('/admin/koleksi/laporan/export', [\App\Http\Controllers\AdminController::class, 'exportLaporan'])->name('admin.koleksi.laporan.export');
