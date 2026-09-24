@@ -136,7 +136,7 @@
                         <select name="kategori_id" required class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-museum-red focus:border-museum-red text-sm bg-white">
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}" {{ ($selectedCollection->kategori_id == $cat->id) ? 'selected' : '' }}>{{ $cat->nama_kategori }}</option>
+                                <option value="{{ $cat->id }}" {{ ($selectedCollection->kategori_id == $cat->id) ? 'selected' : '' }}>{{ $cat->nama }}</option>
                             @endforeach
                         </select>
                     </div>
