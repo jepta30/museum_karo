@@ -294,7 +294,7 @@ class AdminController extends Controller
         $koleksi = $modul->koleksi;
         
         // Log delete activity
-        LogAktivitas::create([
+        \App\Models\LogAktivitas::create([
             'user_id' => auth()->id(),
             'nama_pengguna' => auth()->user()->name,
             'aksi' => 'Menghapus Koleksi Budaya (Admin)',
